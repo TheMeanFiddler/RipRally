@@ -13,7 +13,7 @@ using UnityEngine.UI;
 */
 public class CarAIInput : MonoBehaviour, iInputManager
 {
-    Road Rd = Road.Instance;
+    Road Rd;
     int SegIdx = 1;
     XSec _currXSec;
     Bend _currBend;
@@ -74,6 +74,7 @@ public class CarAIInput : MonoBehaviour, iInputManager
 
     void Start()
     {
+        Rd = Road.Instance;
         _playerGPS = DrivingPlayManager.Current.PlayerCarManager.Gps;
         _rb = GetComponent<Rigidbody>();
     }

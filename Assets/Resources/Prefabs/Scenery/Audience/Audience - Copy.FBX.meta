@@ -1,0 +1,155 @@
+fileFormatVersion: 2
+guid: d09773d34d481fc449899ceeedacee66
+timeCreated: 1504228448
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Audience
+    100002: //RootNode
+    100004: Bip008
+    100006: Bip008 Footsteps
+    100008: Bip008 Head
+    100010: Bip008 HeadNub
+    100012: Bip008 L Calf
+    100014: Bip008 L Clavicle
+    100016: Bip008 L Finger0
+    100018: Bip008 L Finger01
+    100020: Bip008 L Finger0Nub
+    100022: Bip008 L Finger1
+    100024: Bip008 L Finger11
+    100026: Bip008 L Finger1Nub
+    100028: Bip008 L Foot
+    100030: Bip008 L Forearm
+    100032: Bip008 L Hand
+    100034: Bip008 L Thigh
+    100036: Bip008 L Toe0
+    100038: Bip008 L Toe0Nub
+    100040: Bip008 L UpperArm
+    100042: Bip008 Neck
+    100044: Bip008 Pelvis
+    100046: Bip008 R Calf
+    100048: Bip008 R Clavicle
+    100050: Bip008 R Finger0
+    100052: Bip008 R Finger01
+    100054: Bip008 R Finger0Nub
+    100056: Bip008 R Finger1
+    100058: Bip008 R Finger11
+    100060: Bip008 R Finger1Nub
+    100062: Bip008 R Foot
+    100064: Bip008 R Forearm
+    100066: Bip008 R Hand
+    100068: Bip008 R Thigh
+    100070: Bip008 R Toe0
+    100072: Bip008 R Toe0Nub
+    100074: Bip008 R UpperArm
+    100076: Bip008 Spine
+    100078: Bip008 Spine1
+    400000: Audience
+    400002: //RootNode
+    400004: Bip008
+    400006: Bip008 Footsteps
+    400008: Bip008 Head
+    400010: Bip008 HeadNub
+    400012: Bip008 L Calf
+    400014: Bip008 L Clavicle
+    400016: Bip008 L Finger0
+    400018: Bip008 L Finger01
+    400020: Bip008 L Finger0Nub
+    400022: Bip008 L Finger1
+    400024: Bip008 L Finger11
+    400026: Bip008 L Finger1Nub
+    400028: Bip008 L Foot
+    400030: Bip008 L Forearm
+    400032: Bip008 L Hand
+    400034: Bip008 L Thigh
+    400036: Bip008 L Toe0
+    400038: Bip008 L Toe0Nub
+    400040: Bip008 L UpperArm
+    400042: Bip008 Neck
+    400044: Bip008 Pelvis
+    400046: Bip008 R Calf
+    400048: Bip008 R Clavicle
+    400050: Bip008 R Finger0
+    400052: Bip008 R Finger01
+    400054: Bip008 R Finger0Nub
+    400056: Bip008 R Finger1
+    400058: Bip008 R Finger11
+    400060: Bip008 R Finger1Nub
+    400062: Bip008 R Foot
+    400064: Bip008 R Forearm
+    400066: Bip008 R Hand
+    400068: Bip008 R Thigh
+    400070: Bip008 R Toe0
+    400072: Bip008 R Toe0Nub
+    400074: Bip008 R UpperArm
+    400076: Bip008 Spine
+    400078: Bip008 Spine1
+    4300000: Audience
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: Audience
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

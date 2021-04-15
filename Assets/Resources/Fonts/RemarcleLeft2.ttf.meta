@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 6bf7468669a64bf4a917fa496c861eb7
+timeCreated: 1501467223
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Remarcle
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f43b36032050ab642a74a5b194f64cd3, type: 3}
+  - {fileID: 12800000, guid: 16400774d37719048820fae64b138049, type: 3}
+  - {fileID: 12800000, guid: c6681fadc1be62842adc0a18eb1fde88, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

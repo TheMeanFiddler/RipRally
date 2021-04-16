@@ -1,0 +1,160 @@
+fileFormatVersion: 2
+guid: 41914ee2372c8c04da3156c2a80c1905
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: FLDoor
+    100002: FLLight
+    100004: FLSteering
+    100006: FLWheel
+    100008: Frame
+    100010: FRDoor
+    100012: FRLight
+    100014: Front Axel
+    100016: FRSteering
+    100018: FRWheel
+    100020: Lanturns
+    100022: //RootNode
+    100024: Rear Axel
+    100026: RLWheel
+    100028: Roof
+    100030: RRWheel
+    100032: Seat Frames
+    100034: Steering Wheel
+    400000: FLDoor
+    400002: FLLight
+    400004: FLSteering
+    400006: FLWheel
+    400008: Frame
+    400010: FRDoor
+    400012: FRLight
+    400014: Front Axel
+    400016: FRSteering
+    400018: FRWheel
+    400020: Lanturns
+    400022: //RootNode
+    400024: Rear Axel
+    400026: RLWheel
+    400028: Roof
+    400030: RRWheel
+    400032: Seat Frames
+    400034: Steering Wheel
+    2300000: FLDoor
+    2300002: FLLight
+    2300004: FLSteering
+    2300006: FLWheel
+    2300008: Frame
+    2300010: FRDoor
+    2300012: FRLight
+    2300014: Front Axel
+    2300016: FRSteering
+    2300018: FRWheel
+    2300020: Lanturns
+    2300022: Rear Axel
+    2300024: RLWheel
+    2300026: Roof
+    2300028: RRWheel
+    2300030: Seat Frames
+    2300032: Steering Wheel
+    3300000: FLDoor
+    3300002: FLLight
+    3300004: FLSteering
+    3300006: FLWheel
+    3300008: Frame
+    3300010: FRDoor
+    3300012: FRLight
+    3300014: Front Axel
+    3300016: FRSteering
+    3300018: FRWheel
+    3300020: Lanturns
+    3300022: Rear Axel
+    3300024: RLWheel
+    3300026: Roof
+    3300028: RRWheel
+    3300030: Seat Frames
+    3300032: Steering Wheel
+    4300000: Roof
+    4300002: FRDoor
+    4300004: FLDoor
+    4300006: FRLight
+    4300008: FLLight
+    4300010: FLSteering
+    4300012: FLWheel
+    4300014: FRSteering
+    4300016: Seat Frames
+    4300018: Lanturns
+    4300020: Rear Axel
+    4300022: Front Axel
+    4300024: Steering Wheel
+    4300026: Frame
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

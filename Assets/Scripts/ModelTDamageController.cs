@@ -190,16 +190,6 @@ using System.Collections.Generic;
             }
         }
 
-        public void RepairAll()
-        {
-            foreach (KeyValuePair<string, CarPart> Part in partsMap)
-            {
-                if (!Part.Key.Contains(".") && !Part.Key.Contains("Steer"))
-                    Part.Value.ShowMesh("Intact");
-            }
-            AttachHingesAndJoints();
-        }
-
     } //end of DamageController class
 
 

@@ -33,7 +33,7 @@ public class CarAIInput : MonoBehaviour, iInputManager
     float SlideFrac;
     XSec FlickXSec;
     Vector3 AdjustedTurninPt = Vector3.zero;
-    XSec AdjustedTurninXSec = Road.Instance.XSecs[0];
+    XSec AdjustedTurninXSec;
     float PrevFrac;     //Used for turnin and Exit
     int PrevSegIdx;
     float FracPerSeg;
@@ -75,6 +75,7 @@ public class CarAIInput : MonoBehaviour, iInputManager
     void Start()
     {
         Rd = Road.Instance;
+        AdjustedTurninXSec = Road.Instance.XSecs[0];
         _playerGPS = DrivingPlayManager.Current.PlayerCarManager.Gps;
         _rb = GetComponent<Rigidbody>();
     }

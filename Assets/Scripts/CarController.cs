@@ -36,10 +36,6 @@ public class CarController : VehicleController
     private FlatLineRenderer SkidMkLeft;
     private GameObject goSkidMkRight;
     private FlatLineRenderer SkidMkRight;
-    WheelController.WheelHit hitFL = new WheelController.WheelHit();
-    WheelController.WheelHit hitFR = new WheelController.WheelHit();
-    WheelController.WheelHit hitRL = new WheelController.WheelHit();
-    WheelController.WheelHit hitRR = new WheelController.WheelHit();
     private bool IsRuttingFL = false;
     private bool IsRuttingFR = false;
     private bool IsSkiddingFL = false;
@@ -71,9 +67,9 @@ public class CarController : VehicleController
 
     //public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
 
-    void Awake()
+    public override void Awake()
     {
-        goCar = this.transform.Find("car").gameObject;
+        base.Awake();
         SkidPrefab = Resources.Load("Prefabs/SkidmarkPrefab");
         SkidAudioSource = GetComponent<AudioSource>();
         Transform Eng = transform.Find("Engine");
@@ -108,9 +104,6 @@ public class CarController : VehicleController
         }
         catch { _rimSpin = false; }
 
-
-        StickyCarBodyPhysicsMaterial = (PhysicMaterial)Resources.Load("PhysicMaterials/StickyCarBodyPhysicsMaterial");
-        CarBodyPhysicsMaterial = (PhysicMaterial)Resources.Load("PhysicMaterials/CarBodyPhysicsMaterial");
 
         RLWheel = transform.Find("car/RLWheel").gameObject;
         RRWheel = transform.Find("car/RRWheel").gameObject;

@@ -20,15 +20,6 @@ public interface iVehicleController
 
 public class CarController : VehicleController
 {
-    private byte _gpsTimer = 0;
-    Renderer _fLRimRenderer;
-    Renderer _fLRimSpinRenderer;
-    Renderer _fRRimRenderer;
-    Renderer _fRRimSpinRenderer;
-    Renderer _rLRimRenderer;
-    Renderer _rLRimSpinRenderer;
-    Renderer _rRRimRenderer;
-    Renderer _rRRimSpinRenderer;
     bool _rimSpin = true;
     UnityEngine.Object SkidPrefab;
     Transform Skidmarks;
@@ -74,13 +65,9 @@ public class CarController : VehicleController
     private Queue<float> SlipQueue = new Queue<float>();
     private float DelayedSlip = 0f;
     private int SlipDelayTimer = 50;
-    private float h;
     private float _prevh;
-    private float _maxBrakeForce;
     private float BrakeForce;
-    Text txtTrace;
-    Text txtTrace2;
-    List<InputStruct> Inputs = new List<InputStruct>();
+
 
     //public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
 
@@ -205,11 +192,7 @@ public class CarController : VehicleController
         WCFR.fFriction.slipCoefficient = 1.1f;
         */
     }
-    void Start()
-    {
-        txtTrace = GameObject.Find("txtTrace").GetComponent<Text>();
-        txtTrace2 = GameObject.Find("txtTrace2").GetComponent<Text>();
-    }
+
     // Update is called once per frame
     //FixedUpdate is called for every physics calculation
     void FixedUpdate()

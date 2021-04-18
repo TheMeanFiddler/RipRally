@@ -125,14 +125,7 @@ public class KeyboardAndMouseSteerInput : iInputManager
     }
     public float XMovement()
     {
-        if (true)
-        {
-            return Input.mousePosition.x - xOffset;
-        }
-        else
-        {
-            return 0;
-        }
+        return Input.mousePosition.x - xOffset;
     }
     public float YMovement()
     {
@@ -745,7 +738,7 @@ public class ReplayerInput : iInputManager
     //Constructor
     public ReplayerInput()
     {
-        GameObject.DestroyObject(GameObject.Find("pPad"));
+        GameObject.Destroy(GameObject.Find("pPad"));
     }
     public float WMovement()
     {

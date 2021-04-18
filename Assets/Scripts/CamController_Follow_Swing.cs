@@ -108,11 +108,9 @@ public class CamController_Follow_Swing : MonoBehaviour
             //transform.position = target.transform.position + target.transform.up*15f; // * -5f + transform.up;       //remove this line
             trFollowCamInner.LookAt(target.transform.position);
         }
-#if UNITY_EDITOR
-        return;
-#endif
 
-#if UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
+#if UNITY_EDITOR
+#elif UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
         if (!_horizonTilt) return;
 
         //this works but there's a delay

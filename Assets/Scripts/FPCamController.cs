@@ -42,12 +42,8 @@ public class FPCamController:MonoBehaviour
         if (_localLookDesty < 0) _localLookDesty = 360 + _localLookDesty;
 
         transform.localEulerAngles = new Vector3(_localLookx, _localLookDesty, transform.localEulerAngles.z);
-
 #if UNITY_EDITOR
-        return;
-#endif
-
-#if UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
+#elif UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
         if (!_horizonTilt) return;
         Vector3 accel = Vector3.Lerp(OldAccel, Input.acceleration, 0.5f);
         float accelx = Mathf.Clamp(accel.x, -1, 1);

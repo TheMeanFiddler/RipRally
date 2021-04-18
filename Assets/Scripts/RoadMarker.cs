@@ -72,7 +72,8 @@ public class RoadMarker : MonoBehaviour
             PlaceableObject.Current.HideAllGizmos();
             PlaceableObject.Current.EnableClickColliders();
         }
-        catch (System.Exception e) { }
+        catch { }
+
         Material[] Mats;
         Material Mat;
         //Deselect the current roadmarker

@@ -60,7 +60,7 @@ using System.Collections.Generic;
 
         public override void AttachHingesAndJoints()
         {
-            return;
+            //return;
             //Create all the hinges and joints
             HingeJoint BH;
             FixedJoint BF;

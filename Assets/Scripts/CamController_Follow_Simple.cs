@@ -106,11 +106,9 @@ public class CamController_Follow_Simple : MonoBehaviour {
         trFollowCamInner.LookAt(FinalLookPosOffset + target.transform.position);
         PrevLookPos = FinalLookPosOffset;
 
-#if UNITY_EDITOR
-        return;
-#endif
 
-#if UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
+#if UNITY_EDITOR
+#elif UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
         
         if (!_horizonTilt) return;
 

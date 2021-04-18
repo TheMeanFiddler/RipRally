@@ -11,7 +11,6 @@ public class CamController_Follow_Fly : MonoBehaviour {
     Camera _cam;
     public GPS Gps { get; set; }
 	private float height = 4;
-	private float heightDamping = 1;
 	private float LerpSpeed = 1;	//This value increases as the velocity increases
 	private Vector3 _outerCamWantedPos;
 	private Vector2 mouseOffset;
@@ -136,11 +135,9 @@ public class CamController_Follow_Fly : MonoBehaviour {
         trFollowCamInner.LookAt(target.transform.position);
         trFollowCamInner.Rotate(new Vector3(-_frustrumAngle / 2,0,0),Space.Self);
 
-#if UNITY_EDITOR
-        return;
-#endif
 
-#if UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
+#if UNITY_EDITOR
+#elif UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
 
         if (!_horizonTilt) return;
 

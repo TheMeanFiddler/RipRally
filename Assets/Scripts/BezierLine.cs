@@ -377,7 +377,7 @@ public class BezierLine
 
     public void DrawLine()
     {
-        line.SetVertexCount(Path.Count);
+        line.positionCount=Path.Count;
 
         for (int p = 0; p < Path.Count; p++)
         {
@@ -387,7 +387,7 @@ public class BezierLine
 
     public void EraseLine()
     {
-        line.SetVertexCount(0);
+        line.positionCount = 0;
     }
 
     public float Angle(int CtrlPtIdx)

@@ -62,8 +62,6 @@ public class HotrodController : MonoBehaviour, iVehicleController
     private FlatLineRenderer RutLeft;
     private GameObject goRutRight;
     private FlatLineRenderer RutRight;
-    private int SkidMkLeftNodeCount = 0;
-    private int SkidMkRightNodeCount = 0;
     private UnityEngine.Object objSkidMk;
     private GameObject goSkidMkLeft;
     private FlatLineRenderer SkidMkLeft;

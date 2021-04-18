@@ -12,10 +12,10 @@ public class VehicleController : MonoBehaviour, iVehicleController
     public iInputManager InputManager { get; set; }
     protected GameObject goCar;
     protected Rigidbody _rb;
-    GameObject FLWheel;
-    GameObject FRWheel;
-    GameObject RLWheel;
-    GameObject RRWheel;
+    protected GameObject FLWheel;
+    protected GameObject FRWheel;
+    protected GameObject RLWheel;
+    protected GameObject RRWheel;
     Renderer _fLRimRenderer;
     Renderer _fLRimSpinRenderer;
     Renderer _fRRimRenderer;
@@ -31,24 +31,24 @@ public class VehicleController : MonoBehaviour, iVehicleController
     public float motorForce { get; set; }
     public float steerForce { get; set; }
     public float AntiRollForce { get; set; }
-    string RoadMat = "";
-    AnimationCurve frontFrict;
-    AnimationCurve rearFrict;
-    AnimationCurve frontFrictTarmac;
-    AnimationCurve rearFrictTarmac;
-    AnimationCurve frontFrictDirtyRoad;
-    AnimationCurve rearFrictDirtyRoad;
-    AnimationCurve frontFrictDirt;
-    AnimationCurve rearFrictDirt;
+    protected string RoadMat = "";
+    protected AnimationCurve frontFrict;
+    protected AnimationCurve rearFrict;
+    protected AnimationCurve frontFrictTarmac;
+    protected AnimationCurve rearFrictTarmac;
+    protected AnimationCurve frontFrictDirtyRoad;
+    protected AnimationCurve rearFrictDirtyRoad;
+    protected AnimationCurve frontFrictDirt;
+    protected AnimationCurve rearFrictDirt;
     private int SegIdx;
     protected WheelController WCFL;
     protected WheelController WCFR;
     protected WheelController WCRL;
     protected WheelController WCRR;
-    private ParticleSystem peSprayFL;
-    private ParticleSystem peSprayFR;
-    private ParticleSystem peDustFL;
-    private ParticleSystem peDustFR;
+    protected ParticleSystem psSprayL;
+    protected ParticleSystem psSprayR;
+    protected ParticleSystem psDustL;
+    protected ParticleSystem psDustR;
     private int RutLeftNodeCount = 0;
     private int RutRightNodeCount = 0;
     private GameObject goRutLeft;
@@ -129,10 +129,6 @@ public class VehicleController : MonoBehaviour, iVehicleController
         RutMatrl = (Material)Resources.Load("Prefabs/Materials/WheelRutGrey");
         SkidMatrl = (Material)Resources.Load("Prefabs/Materials/SkidMark");
 
-        peSprayFL = transform.Find("WheelColliders/WCFL/SprayFL").GetComponent<ParticleSystem>();
-        peSprayFR = transform.Find("WheelColliders/WCFR/SprayFR").GetComponent<ParticleSystem>();
-        peDustFL = transform.Find("WheelColliders/WCFL/DustFL").GetComponent<ParticleSystem>();
-        peDustFR = transform.Find("WheelColliders/WCFR/DustFR").GetComponent<ParticleSystem>();
         try
         {
             _fLRimRenderer = transform.Find("car/FLWheel/FLRim").GetComponent<Renderer>();
@@ -543,62 +539,62 @@ public class VehicleController : MonoBehaviour, iVehicleController
             {
                 //+ve ForwardSlip means spraying backwards  
                 //+ve SteerAngle = Right
-                peSprayFL.transform.localRotation = Quaternion.Euler(45, WCFL.steerAngle + (ForwardSlipFL >= 0 ? 0 : 180), 0);
+                psSprayL.transform.localRotation = Quaternion.Euler(45, WCFL.steerAngle + (ForwardSlipFL >= 0 ? 0 : 180), 0);
                 if (groundedFL && ((ForwardSlipFL < 0 && h < -0.01f) || (ForwardSlipFL > 0 && h > 0.01f)) && Mathf.Abs(WCFL.rpm) > 0)
                 {
-                    peSprayFL.Play();
-                    peSprayFL.startSpeed = -Mathf.Clamp((Mathf.Abs(ForwardSlipFL) + Mathf.Abs(SidewaysSlipFL)) * 14, 0, 7);
+                    psSprayL.Play();
+                    psSprayL.startSpeed = -Mathf.Clamp((Mathf.Abs(ForwardSlipFL) + Mathf.Abs(SidewaysSlipFL)) * 14, 0, 7);
                     // THis was for the dust - peSprayFL.startSpeed = -Mathf.Abs(ForwardSlipFL) / 2;
-                    peSprayFL.emissionRate = (Mathf.Abs(ForwardSlipFL) + Mathf.Abs(SidewaysSlipFL)) * 100;
+                    psSprayL.emissionRate = (Mathf.Abs(ForwardSlipFL) + Mathf.Abs(SidewaysSlipFL)) * 100;
                 }
                 else
                 {
-                    peSprayFL.Stop();
-                    peSprayFL.startSpeed = 0;
+                    psSprayL.Stop();
+                    psSprayL.startSpeed = 0;
                 }
 
-                peSprayFR.transform.localRotation = Quaternion.Euler(45, WCFR.steerAngle + (ForwardSlipFR >= 0 ? 0 : 180), 0);
+                psSprayR.transform.localRotation = Quaternion.Euler(45, WCFR.steerAngle + (ForwardSlipFR >= 0 ? 0 : 180), 0);
                 if (groundedFR && ((ForwardSlipFR < 0 && h > 0.01f) || (ForwardSlipFR > 0 && h < -0.01f)) && Mathf.Abs(WCFR.rpm) > 0)
                 {
-                    peSprayFR.Play();
-                    peSprayFR.startSpeed = -Mathf.Clamp((Mathf.Abs(ForwardSlipFR) + Mathf.Abs(SidewaysSlipFR)) * 14, 0, 7);
-                    peSprayFR.emissionRate = (Mathf.Abs(ForwardSlipFR) + Mathf.Abs(SidewaysSlipFR)) * 100;
+                    psSprayR.Play();
+                    psSprayR.startSpeed = -Mathf.Clamp((Mathf.Abs(ForwardSlipFR) + Mathf.Abs(SidewaysSlipFR)) * 14, 0, 7);
+                    psSprayR.emissionRate = (Mathf.Abs(ForwardSlipFR) + Mathf.Abs(SidewaysSlipFR)) * 100;
                 }
                 else
                 {
-                    peSprayFR.Stop();
-                    peSprayFR.startSpeed = 0;
+                    psSprayR.Stop();
+                    psSprayR.startSpeed = 0;
                 }
             }
-            else { peSprayFR.Stop(); peSprayFL.Stop(); peSprayFR.startSpeed = 0; peSprayFL.startSpeed = 0; }
+            else { psSprayR.Stop(); psSprayL.Stop(); psSprayR.startSpeed = 0; psSprayL.startSpeed = 0; }
         }
         catch (Exception e) { Debug.Log(e.ToString()); }
 
         //Spray dust on DirtyRoad
         try
         {
-            peDustFL.Stop();
-            peDustFR.Stop();
+            psDustL.Stop();
+            psDustR.Stop();
 
             if (RoadMat == "DirtyRoad")
             {
-                peDustFL.Play();
-                peDustFR.Play();
+                psDustL.Play();
+                psDustR.Play();
                 float SlipFL = Mathf.Clamp(WCFL.SlipVectorMagnitude, 0, 0.1f);
                 float SlipFR = Mathf.Clamp(WCFR.SlipVectorMagnitude, 0, 0.1f);
-                ParticleSystem.EmissionModule emRL = peDustFL.emission;
+                ParticleSystem.EmissionModule emRL = psDustL.emission;
                 emRL.rate = SlipFL * 500f;
-                ParticleSystem.EmissionModule emRR = peDustFR.emission;
+                ParticleSystem.EmissionModule emRR = psDustR.emission;
                 emRR.rate = SlipFR * 500f;
-                peDustFL.transform.localPosition = new Vector3(0, -0.4f, -WCFL.forwardFriction.slip / 6);
-                peDustFR.transform.localPosition = new Vector3(0, -0.4f, -WCFR.forwardFriction.slip / 6);
+                psDustL.transform.localPosition = new Vector3(0, -0.4f, -WCFL.forwardFriction.slip / 6);
+                psDustR.transform.localPosition = new Vector3(0, -0.4f, -WCFR.forwardFriction.slip / 6);
 
 
             }
             else
             {
-                peDustFL.Stop();
-                peDustFR.Stop();
+                psDustL.Stop();
+                psDustR.Stop();
             }
         }
         catch { }
@@ -757,26 +753,7 @@ public class VehicleController : MonoBehaviour, iVehicleController
         BrakeForce = InputManager.BrakeForce * _maxBrakeForce;
         //STEERING
         h = InputManager.XMovement();
-        /*if (Gps == null) h = InputManager.XMovement();
-        else
-        {
-            if (Gps.CurrentBend != null)
-            {
-                if (Gps.CurrSegIdx > Gps.CurrentBend.TurninXSec.Idx && Gps.CurrSegIdx < Gps.CurrentBend.ApexXSec.Idx)
-                {
-                    h = (Gps.CurrentBend.Type == BendType.Right? 1 : -1)*20f;
-                }
-                else
-                    h = InputManager.XMovement();
-            }
-           */
-        // / (1 + GetComponent<Rigidbody>().velocity.magnitude / 20); //The last number: bigger means sharper turns at high speed
         h = Mathf.Clamp(h, -40, 40);
-        byte Flag = 0;
-        if (Input.GetKeyDown(KeyCode.LeftShift)) Flag = 1;
-        if (Input.GetKeyDown(KeyCode.LeftControl)) Flag = 2;
-        //Inputs.Add(new InputStruct { Time = Time.time, Accel = InputManager.ZMovement(), Brake = InputManager.BrakeForce, Steer = InputManager.XMovement(), Event = Flag });
-        //_sql.RunSQL("Insert into tblInput (Time, Accel, Brake, Steer, Event) VALUES (" + Time.time + "," + InputManager.ZMovement() + "," + InputManager.BrakeForce + "," + InputManager.XMovement() + "," + Flag + ")");
     }
 
 

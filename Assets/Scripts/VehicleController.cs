@@ -47,6 +47,10 @@ public class VehicleController : MonoBehaviour, iVehicleController
     protected ParticleSystem psSprayR;
     protected ParticleSystem psDustL;
     protected ParticleSystem psDustR;
+    protected ParticleSystem peSprayL;
+    protected ParticleSystem peSprayR;
+    protected ParticleSystem peDustL;
+    protected ParticleSystem peDustR;
 
     protected WheelController.WheelHit hitFL = new WheelController.WheelHit();
     protected WheelController.WheelHit hitFR = new WheelController.WheelHit();
@@ -83,11 +87,6 @@ public class VehicleController : MonoBehaviour, iVehicleController
     public virtual void Awake()
     {
         goCar = this.transform.Find("car").gameObject;
-
-        StickyCarBodyPhysicsMaterial = (PhysicMaterial)Resources.Load("PhysicMaterials/StickyCarBodyPhysicsMaterial");
-        CarBodyPhysicsMaterial = (PhysicMaterial)Resources.Load("PhysicMaterials/CarBodyPhysicsMaterial");
-
-
     }
     void Start()
     {

@@ -9,8 +9,7 @@ public class MachineCarController : CarController
 {
     public override void Init()
     {
-        Transform trPlayer = goCar.transform.parent;
-        GameObject goPlayer = trPlayer.gameObject;
+        GameObject goPlayer = this.gameObject;
         goPlayer.AddComponent<CarAIInput>();
         InputManager = goPlayer.GetComponent<CarAIInput>();
         CarAIInput AI = (CarAIInput)InputManager;

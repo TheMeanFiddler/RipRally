@@ -159,9 +159,4 @@ public class CarReplayerController : MonoBehaviour, iVehicleController
         throw new NotImplementedException();
     }
 
-    void Destroy()
-    {
-        Gps = null;
-        goCar = null;
-    }
 }

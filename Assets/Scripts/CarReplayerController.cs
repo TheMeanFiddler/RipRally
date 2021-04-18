@@ -20,10 +20,18 @@ public class CarReplayerController : MonoBehaviour, iVehicleController
     WheelController.WheelHit hitFR = new WheelController.WheelHit();
     private byte _gpsTimer = 0;
     private string RoadMat;
-    private ParticleSystem peSprayFL;
-    private ParticleSystem peSprayFR;
-    private ParticleSystem peDustFR;
-    private ParticleSystem peDustFL;
+    private ParticleSystem psSprayL;
+    private ParticleSystem psSprayR;
+    private ParticleSystem psDustR;
+    private ParticleSystem psDustL;
+    private ParticleSystem.EmissionModule peSprayL;
+    private ParticleSystem.EmissionModule peSprayR;
+    private ParticleSystem.EmissionModule peDustL;
+    private ParticleSystem.EmissionModule peDustR;
+    protected ParticleSystem.MainModule pmSprayL;
+    protected ParticleSystem.MainModule pmSprayR;
+    protected ParticleSystem.MainModule pmDustL;
+    protected ParticleSystem.MainModule pmDustR;
     private Transform _trSkidMarks;
     private int RutLeftNodeCount = 0;
     private int RutRightNodeCount = 0;
@@ -49,14 +57,21 @@ public class CarReplayerController : MonoBehaviour, iVehicleController
         WCRL = transform.Find("WheelColliders/WCRL").GetComponent<WheelController>();
         WCRR = transform.Find("WheelColliders/WCRR").GetComponent<WheelController>();
 
-        peSprayFL = transform.Find("WheelColliders/WCFL/SprayFL").GetComponent<ParticleSystem>();
-        peSprayFR = transform.Find("WheelColliders/WCFR/SprayFR").GetComponent<ParticleSystem>();
-        peDustFL = transform.Find("WheelColliders/WCFL/DustFL").GetComponent<ParticleSystem>();
-        peDustFR = transform.Find("WheelColliders/WCFR/DustFR").GetComponent<ParticleSystem>();
-        ParticleSystem.EmissionModule emRL = peDustFL.emission;
-        emRL.rateOverTime = 160f;
-        ParticleSystem.EmissionModule emRR = peDustFR.emission;
-        emRR.rateOverTime = 160f;
+        psSprayL = transform.Find("WheelColliders/WCFL/SprayFL").GetComponent<ParticleSystem>();
+        psSprayR = transform.Find("WheelColliders/WCFR/SprayFR").GetComponent<ParticleSystem>();
+        psDustL = transform.Find("WheelColliders/WCFL/DustFL").GetComponent<ParticleSystem>();
+        psDustR = transform.Find("WheelColliders/WCFR/DustFR").GetComponent<ParticleSystem>();
+        peSprayL = psSprayL.emission;
+        peSprayL = psSprayL.emission;
+        peSprayR = psSprayR.emission;
+        peDustL = psDustL.emission;
+        peDustR = psDustR.emission;
+        pmSprayL = psSprayL.main;
+        pmSprayR = psSprayR.main;
+        pmDustL = psDustL.main;
+        pmDustR = psDustR.main;
+        peDustL.rateOverTime = 160f;
+        peDustR.rateOverTime = 160f;
 
         WCFL.Replayer = true;
         WCFR.Replayer = true;
@@ -81,7 +96,7 @@ public class CarReplayerController : MonoBehaviour, iVehicleController
         _gpsTimer--;
 
         #region Spray and Smoke Particles Region
-        if (peSprayFL.isPaused) return;
+        if (psSprayL.isPaused) return;
         RoadMat = Gps.RoadMat;
         bool groundedFL = WCFL.isGrounded;
         bool groundedFR = WCFR.isGrounded;
@@ -96,57 +111,57 @@ public class CarReplayerController : MonoBehaviour, iVehicleController
                 //SprayFL.transform.localRotation = Quaternion.Euler(45, (ForwardSlipRL >= 0 ? 0 : 180), 0);
                 if (groundedFL && WCFL.angularVelocity != 0)
                 {
-                    peSprayFL.Play();
-                    peSprayFL.startSpeed = 8;
+                    psSprayL.Play();
+                    pmSprayL.startSpeed = 8;
                     // THis was for the dust - peSprayFL.startSpeed = -Mathf.Abs(ForwardSlipFL) / 2;
-                    peSprayFL.emissionRate = 100;
+                    peSprayL.rateOverTime = 100;
                 }
                 else
                 {
-                    peSprayFL.Stop();
+                    psSprayL.Stop();
                 }
 
                 //SprayFR.transform.localRotation = Quaternion.Euler(45, (ForwardSlipRR >= 0 ? 0 : 180), 0);
                 if (groundedFR && WCFR.angularVelocity != 0)
                 {
-                    peSprayFR.Play();
-                    peSprayFR.startSpeed = 8;
-                    peSprayFR.emissionRate = 100;
+                    psSprayR.Play();
+                    pmSprayR.startSpeed = 8;
+                    peSprayR.rateOverTime = 100;
                 }
                 else
                 {
-                    peSprayFR.Stop();
+                    psSprayR.Stop();
                     //peSprayFR.startSpeed = 0;
                 }
             }
-            else { peSprayFR.Stop(); peSprayFL.Stop(); peSprayFR.startSpeed = 0; peSprayFL.startSpeed = 0; }
+            else { psSprayR.Stop(); psSprayL.Stop(); pmSprayR.startSpeed = 0; pmSprayL.startSpeed = 0; }
         }
         catch (Exception e) { Debug.Log(e.ToString()); }
 
         try
         {
-            peDustFL.Stop();
-            peDustFR.Stop();
+            psDustL.Stop();
+            psDustR.Stop();
 
             if (RoadMat == "DirtyRoad")
             {
                 if (groundedFL)
                 {
-                    peDustFL.Play();
+                    psDustL.Play();
                 }
                 if (groundedFR)
                 {
-                    peDustFR.Play();
+                    psDustR.Play();
                 }
-                peDustFL.transform.localPosition = new Vector3(0, -0.4f, -WCFL.forwardFriction.slip / 6);
-                peDustFR.transform.localPosition = new Vector3(0, -0.4f, -WCFR.forwardFriction.slip / 6);
+                psDustL.transform.localPosition = new Vector3(0, -0.4f, -WCFL.forwardFriction.slip / 6);
+                psDustR.transform.localPosition = new Vector3(0, -0.4f, -WCFR.forwardFriction.slip / 6);
 
 
             }
             else
             {
-                peDustFL.Stop();
-                peDustFR.Stop();
+                psDustL.Stop();
+                psDustR.Stop();
             }
 
         }

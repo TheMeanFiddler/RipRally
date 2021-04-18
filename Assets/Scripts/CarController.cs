@@ -769,6 +769,12 @@ public class CarController : VehicleController
 
     }
 
+    public override void StartEngine()
+    {
+        EngineAudioSource.mute = false;
+        IdleAudioSource.mute = false;
+        CoughAudioSource.mute = false;
+    }
 }
 
 

@@ -736,7 +736,11 @@ void Update()
 
 }
 
-
+    public override void StartEngine()
+    {
+        EngineAudioSource.mute = false;
+        CoughAudioSource.mute = false;
+    }
 
 }
 

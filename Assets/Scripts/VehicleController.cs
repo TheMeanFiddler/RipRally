@@ -108,11 +108,8 @@ public class VehicleController : MonoBehaviour, iVehicleController
         h = Mathf.Clamp(h, -40, 40);
     }
 
-    public void StartEngine()
+    public virtual void StartEngine()
     {
-        EngineAudioSource.mute = false;
-        IdleAudioSource.mute = false;
-        CoughAudioSource.mute = false;
     }
 
     protected virtual void OnDestroy()

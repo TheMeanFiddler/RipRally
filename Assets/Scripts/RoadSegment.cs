@@ -227,7 +227,7 @@ public class RoadSegment : iRoadSeg
 
     public void DeleteRoad()
     {
-        GameObject.DestroyObject(goSeg);
+        GameObject.Destroy(goSeg);
     }
 
     public void SetMaterial(string Material)

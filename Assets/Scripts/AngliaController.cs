@@ -7,52 +7,13 @@ using System;
 
 
 
-public class AngliaController : MonoBehaviour, iVehicleController
+public class AngliaController : VehicleController
 {
-    public GPS Gps { get; set; }
-    private byte _gpsTimer = 0;
-    public iInputManager InputManager { get; set; }
-    protected GameObject goCar;
-    protected Rigidbody _rb;
-    GameObject FLWheel;
-    GameObject FRWheel;
-    GameObject RLWheel;
-    GameObject RRWheel;
-    Renderer _fLRimRenderer;
-    Renderer _fLRimSpinRenderer;
-    Renderer _fRRimRenderer;
-    Renderer _fRRimSpinRenderer;
-    Renderer _rLRimRenderer;
-    Renderer _rLRimSpinRenderer;
-    Renderer _rRRimRenderer;
-    Renderer _rRRimSpinRenderer;
-    bool _rimSpin = true;
-    UnityEngine.Object SkidPrefab;
-    Transform Skidmarks;
-    public float SkidThresh { get; set; }
-    public float motorForce { get; set; }
-    public float AntiRollForce { get; set; }
-    string RoadMat = "";
     DamageController _damageController;
-    AnimationCurve frontFrict;
-    AnimationCurve rearFrict;
-    AnimationCurve frontFrictTarmac;
-    AnimationCurve rearFrictTarmac;
-    AnimationCurve frontFrictDirtyRoad;
-    AnimationCurve rearFrictDirtyRoad;
-    AnimationCurve frontFrictDirt;
-    AnimationCurve rearFrictDirt;
     private int SegIdx;
-    protected WheelController WCFL;
-    protected WheelController WCFR;
-    protected WheelController WCRL;
-    protected WheelController WCRR;
-    private ParticleSystem peSprayFL;
-    private ParticleSystem peSprayFR;
-    private ParticleSystem peSprayFLFwd;
-    private ParticleSystem peSprayFRFwd;
-    private ParticleSystem peDustRR;
-    private ParticleSystem peDustRL;
+    private ParticleSystem psSprayLFwd;
+    private ParticleSystem psSprayRFwd;
+    UnityEngine.Object SkidPrefab;
     private Transform _trSkidMarks;
     private int RutLeftNodeCount = 0;
     private int RutRightNodeCount = 0;
@@ -66,21 +27,14 @@ public class AngliaController : MonoBehaviour, iVehicleController
     private FlatLineRenderer SkidMkLeft;
     private GameObject goSkidMkRight;
     private FlatLineRenderer SkidMkRight;
-    WheelController.WheelHit hitFL = new WheelController.WheelHit();
-    WheelController.WheelHit hitFR = new WheelController.WheelHit();
-    WheelController.WheelHit hitRL = new WheelController.WheelHit();
-    WheelController.WheelHit hitRR = new WheelController.WheelHit();
     private bool WasInAir = false;
     private bool IsRuttingFL = false;
-    public bool WasRuttingFL { get; set; }
     private bool IsRuttingFR = false;
-    public bool WasRuttingFR { get; set; }
     private bool IsSkiddingRL = false;
     public bool WasSkiddingRL { get; set; }
     private bool IsSkiddingRR = false;
     public bool WasSkiddingRR { get; set; }
     protected AudioSource SkidAudioSource;
-    protected AudioSource IdleAudioSource;
     protected AudioSource RevAudioSource;
     protected AudioSource AccelAudioSource;
     protected AudioSource DecelAudioSource;
@@ -88,24 +42,16 @@ public class AngliaController : MonoBehaviour, iVehicleController
     float DecelStartTime = 0;
     private float _prevEngineTorque;
     private float _prevRPM;
-    Material RutMatrl;
-    Material SkidMatrl;
-    public bool EndSkidmarks { get; set; }
     PhysicMaterial StickyCarBodyPhysicsMaterial;
     PhysicMaterial CarBodyPhysicsMaterial;
-    protected float v;
-    private float h;
     private bool Braking = false;
-    private float _maxBrakeForce;
     private float BrakeForce;
     private float FCoef;    //remember the default Fwd and Side Force COeffs cos we tinker with them
     private float SCoef;
 
-    public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
 
-    void Awake()
+    public override void Awake()
     {
-        goCar = this.transform.Find("car").gameObject;
         _damageController = GetComponent<DamageController>();
         SkidPrefab = Resources.Load("Prefabs/SkidmarkPrefab");
         _trSkidMarks = GameObject.Find("Skidmarks").transform;
@@ -130,12 +76,16 @@ public class AngliaController : MonoBehaviour, iVehicleController
         RutMatrl = (Material)Resources.Load("Prefabs/Materials/WheelRutGrey");
         SkidMatrl = (Material)Resources.Load("Prefabs/Materials/SkidMark");
 
-        peSprayFL = transform.Find("WheelColliders/WCRL/SprayFL").GetComponent<ParticleSystem>();
-        peSprayFR = transform.Find("WheelColliders/WCRR/SprayFR").GetComponent<ParticleSystem>();
-        peSprayFLFwd = transform.Find("WheelColliders/WCRL/SprayFLFwd").GetComponent<ParticleSystem>();
-        peSprayFRFwd = transform.Find("WheelColliders/WCRR/SprayFRFwd").GetComponent<ParticleSystem>();
-        peDustRL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
-        peDustRR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
+        psSprayL = transform.Find("WheelColliders/WCRL/SprayFL").GetComponent<ParticleSystem>();
+        psSprayR = transform.Find("WheelColliders/WCRR/SprayFR").GetComponent<ParticleSystem>();
+        psSprayLFwd = transform.Find("WheelColliders/WCRL/SprayFLFwd").GetComponent<ParticleSystem>();
+        psSprayRFwd = transform.Find("WheelColliders/WCRR/SprayFRFwd").GetComponent<ParticleSystem>();
+        psDustL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
+        psDustR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
+        peSprayL = psSprayL.emission;
+        peSprayR = psSprayR.emission;
+        pmSprayL = psSprayL.main;
+        pmSprayR = psSprayR.main;
         try
         {
             _fLRimRenderer = transform.Find("car/FLWheel/FLRim").GetComponent<Renderer>();
@@ -230,10 +180,6 @@ public class AngliaController : MonoBehaviour, iVehicleController
         WCRR.forwardFriction.frictionCurve = rearFrictTarmac;
         */
     }
-    //KL Planning 616234
-    //Garage door 2134
-    //borough.planning@west-norfolk.gov.uk
-    //PP-06503945
 
     // Update is called once per frame
     //FixedUpdate is called for every physics calculation
@@ -258,7 +204,6 @@ public class AngliaController : MonoBehaviour, iVehicleController
             WCRR.motorTorque = Mathf.Clamp(WCRR.motorTorque, 0, 10000);
         }
 
-        UnityEngine.Profiling.Profiler.BeginSample("RimSpin");
         if (_rimSpin)
         {
             if (Mathf.Abs(WCFL.rpm) > 300)
@@ -302,7 +247,6 @@ public class AngliaController : MonoBehaviour, iVehicleController
                 _rRRimSpinRenderer.enabled = false;
             }
         }
-        UnityEngine.Profiling.Profiler.EndSample();
 
         //Adapt the tyre slip according to the road type
 
@@ -488,92 +432,93 @@ public class AngliaController : MonoBehaviour, iVehicleController
                 {
                     if (WCRL.motorTorque > 0)
                     {
-                        peSprayFLFwd.Stop();
-                        peSprayFL.Play();
-                        var vel = peSprayFL.velocityOverLifetime;
+                        psSprayLFwd.Stop();
+                        psSprayL.Play();
+                        var vel = psSprayL.velocityOverLifetime;
                         vel.x = WCRL.slipVectorNorm.y * Mathf.Sign(WCRL.motorTorque) * 7;
                         vel.y = 2;
                         vel.z = WCRL.slipVectorNorm.x * Mathf.Abs(WCRL.SlipVectorMagnitude) * 7;
-                        peSprayFL.emissionRate = Mathf.Clamp(WCRL.SlipVectorMagnitude * 50, 0, 50);
+                        peSprayL.rateOverTime = Mathf.Clamp(WCRL.SlipVectorMagnitude * 50, 0, 50);
                     }
                     else   //goimg backwards
                     {
-                        peSprayFL.Stop();
-                        peSprayFLFwd.Play();
-                        var vel = peSprayFLFwd.velocityOverLifetime;
+                        psSprayL.Stop();
+                        psSprayLFwd.Play();
+                        var vel = psSprayLFwd.velocityOverLifetime;
                         vel.x = WCRL.slipVectorNorm.y * Mathf.Sign(WCRL.motorTorque) * 7;
                         vel.y = 2;
                         vel.z = WCRL.slipVectorNorm.x * Mathf.Abs(WCRL.SlipVectorMagnitude) * 7;
-                        peSprayFLFwd.emissionRate = Mathf.Clamp(WCRL.SlipVectorMagnitude * 50, 0, 50);
+                        ParticleSystem.EmissionModule e = psSprayLFwd.emission;
+                        e.rateOverTime = Mathf.Clamp(WCRL.SlipVectorMagnitude * 30, 0, 30);
                     }
                 }
                 else
                 {
-                    peSprayFLFwd.Stop();
-                    peSprayFL.Stop();
+                    psSprayLFwd.Stop();
+                    psSprayL.Stop();
                 }
 
                 if (groundedRR && ForwardSlipRR != 0)
                 {
                     if (WCRL.motorTorque > 0)
                     {
-                        peSprayFRFwd.Stop();
-                        peSprayFR.Play();
-                        var vel = peSprayFR.velocityOverLifetime;
+                        psSprayRFwd.Stop();
+                        psSprayR.Play();
+                        var vel = psSprayR.velocityOverLifetime;
                         vel.x = WCRR.slipVectorNorm.y * Mathf.Sign(WCRR.motorTorque) * 7;
                         vel.y = 2;
                         vel.z = WCRR.slipVectorNorm.x * Mathf.Abs(WCRR.SlipVectorMagnitude) * 7;
-                        peSprayFR.emissionRate = Mathf.Clamp(WCRR.SlipVectorMagnitude * 50, 0, 50);
+                        peSprayR.rateOverTime = Mathf.Clamp(WCRR.SlipVectorMagnitude * 50, 0, 50);
                     }
                     else
                     {
-                        peSprayFR.Stop();
-                        peSprayFRFwd.Play();
-                        var vel = peSprayFRFwd.velocityOverLifetime;
+                        psSprayR.Stop();
+                        psSprayRFwd.Play();
+                        var vel = psSprayRFwd.velocityOverLifetime;
                         vel.x = WCRR.slipVectorNorm.y * Mathf.Sign(WCRR.motorTorque) * 7;
                         vel.y = 2;
                         vel.z = WCRR.slipVectorNorm.x * Mathf.Abs(WCRR.SlipVectorMagnitude) * 7;
-                        peSprayFRFwd.emissionRate = Mathf.Clamp(WCRR.SlipVectorMagnitude * 50, 0, 50);
+                        ParticleSystem.EmissionModule e = psSprayRFwd.emission;
+                        e.rateOverTime = Mathf.Clamp(WCRR.SlipVectorMagnitude * 30, 0, 30);
                     }
 
 
                 }
                 else
                 {
-                    peSprayFRFwd.Stop();
-                    peSprayFR.Stop();
+                    psSprayRFwd.Stop();
+                    psSprayR.Stop();
                 }
                 //Fred.wizard@btinternet.com
             }
-            else { peSprayFR.Stop(); peSprayFRFwd.Stop(); peSprayFL.Stop(); peSprayFLFwd.Stop(); }
+            else { psSprayR.Stop(); psSprayRFwd.Stop(); psSprayL.Stop(); psSprayLFwd.Stop(); }
         }
         catch (Exception e) { Debug.Log(e.ToString()); }
 
         //Spray dust on DirtyRoad
         try
         {
-            peDustRL.Stop();
-            peDustRR.Stop();
+            psDustL.Stop();
+            psDustR.Stop();
             
             if (RoadMat == "DirtyRoad")
             {
-                peDustRL.Play();
-                peDustRR.Play();
+                psDustL.Play();
+                psDustR.Play();
                 float SlipRL = Mathf.Clamp(WCRL.SlipVectorMagnitude, 0, 2f);
                 float SlipRR = Mathf.Clamp(WCRR.SlipVectorMagnitude, 0, 2f);
-                ParticleSystem.EmissionModule emRL = peDustRL.emission;
-                emRL.rate = SlipRL * 80f;
-                ParticleSystem.EmissionModule emRR = peDustRR.emission;
-                emRR.rate = SlipRR * 80f;
-                peDustRL.transform.localPosition = new Vector3(0, -0.4f, -WCRL.forwardFriction.slip/6);
-                peDustRR.transform.localPosition = new Vector3(0, -0.4f, -WCRR.forwardFriction.slip/6);
+                ParticleSystem.EmissionModule emRL = psDustL.emission;
+                peDustL.rateOverTime = SlipRL * 80f;
+                peDustR.rateOverTime = SlipRR * 80f;
+                psDustL.transform.localPosition = new Vector3(0, -0.4f, -WCRL.forwardFriction.slip/6);
+                psDustR.transform.localPosition = new Vector3(0, -0.4f, -WCRR.forwardFriction.slip/6);
                 
 
             }
             else
             {
-                peDustRL.Stop();
-                peDustRR.Stop();
+                psDustL.Stop();
+                psDustR.Stop();
             }
             
         }
@@ -827,7 +772,7 @@ public class AngliaController : MonoBehaviour, iVehicleController
 */
 
 
-    public void StartEngine()
+    public override void StartEngine()
     {
         IdleAudioSource.mute = false;
         RevAudioSource.mute = false;
@@ -835,13 +780,6 @@ public class AngliaController : MonoBehaviour, iVehicleController
         DecelAudioSource.mute = false;
         IdleAudioSource.Play();
     }
-
-    protected virtual void OnDestroy()
-    {
-        Gps = null;
-        goCar = null;
-    }
-
 
 }
 

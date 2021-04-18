@@ -17,7 +17,7 @@ class ScreenshotCam:MonoBehaviour
             Screenshot.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
             Screenshot.Apply();
             GameData.current.Img = Screenshot.GetRawTextureData();
-            DestroyObject(Screenshot);
+            GameObject.Destroy(Screenshot);
             //Debug.Break();
             Destroy(this.gameObject);
             //DestroyObject(rt);

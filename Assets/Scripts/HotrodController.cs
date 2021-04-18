@@ -11,12 +11,8 @@ public class HotrodController : VehicleController
 {
     DamageController _damageController;
     private int SegIdx;
-    private ParticleSystem psSprayL;
-    private ParticleSystem psSprayR;
     private ParticleSystem psSprayLFwd;
     private ParticleSystem psSprayRFwd;
-    private ParticleSystem psDustRR;
-    private ParticleSystem psDustRL;
     private Transform _trSkidMarks;
     private int RutLeftNodeCount = 0;
     private int RutRightNodeCount = 0;
@@ -40,13 +36,10 @@ public class HotrodController : VehicleController
     public bool WasSkiddingRR { get; set; }
     List<GameObject> SkidMarks;
     private AudioSource SkidAudioSource;
-    protected AudioSource ClutchAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;
     PhysicMaterial StickyCarBodyPhysicsMaterial;
     PhysicMaterial CarBodyPhysicsMaterial;
-    protected float v;
-    private float h;
     private bool Braking = false;
     private float BrakeForce;
     private float FCoef;    //remember the default Fwd and Side Force COeffs cos we tinker with them
@@ -78,8 +71,8 @@ public class HotrodController : VehicleController
         psSprayR = transform.Find("WheelColliders/WCRR/SprayFR").GetComponent<ParticleSystem>();
         psSprayLFwd = transform.Find("WheelColliders/WCRL/SprayFLFwd").GetComponent<ParticleSystem>();
         psSprayRFwd = transform.Find("WheelColliders/WCRR/SprayFRFwd").GetComponent<ParticleSystem>();
-        psDustRL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
-        psDustRR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
+        psDustL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
+        psDustR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
         peSprayL = psSprayL.emission;
         peSprayR = psSprayR.emission;
         pmSprayL = psSprayL.main;
@@ -106,7 +99,7 @@ public class HotrodController : VehicleController
         WCFR = transform.Find("WheelColliders/WCFR").GetComponent<WheelController>();
         WCRL = transform.Find("WheelColliders/WCRL").GetComponent<WheelController>();
         WCRR = transform.Find("WheelColliders/WCRR").GetComponent<WheelController>();
-        _rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>(); 
         _rb.centerOfMass = new Vector3(0, 0.2f, 0.52f);
 
         motorForce = 2000f;
@@ -190,10 +183,6 @@ public class HotrodController : VehicleController
         */
 
     }
-    //KL Planning 616234
-    //Garage door 2134
-    //borough.planning@west-norfolk.gov.uk
-    //PP-06503945
 
     // Update is called once per frame
     //FixedUpdate is called for every physics calculation
@@ -219,7 +208,6 @@ public class HotrodController : VehicleController
             WCRR.motorTorque = Mathf.Clamp(WCRR.motorTorque, 0, 10000);
         }
 
-        UnityEngine.Profiling.Profiler.BeginSample("RimSpin");
         if (_rimSpin)
         {
             if (Mathf.Abs(WCFL.rpm) > 300)
@@ -263,7 +251,6 @@ public class HotrodController : VehicleController
                 _rRRimSpinRenderer.enabled = false;
             }
         }
-        UnityEngine.Profiling.Profiler.EndSample();
 
         //Adapt the tyre slip according to the road type
 
@@ -493,7 +480,7 @@ public class HotrodController : VehicleController
                         vel.x = WCRR.slipVectorNorm.y * Mathf.Sign(WCRR.motorTorque) * 4;
                         vel.y = 2;
                         vel.z = WCRR.slipVectorNorm.x * Mathf.Abs(WCRR.SlipVectorMagnitude) * 5;
-                        peSprayL.rateOverTime = Mathf.Clamp(WCRL.SlipVectorMagnitude * 50, 0, 50);
+                        peSprayR.rateOverTime = Mathf.Clamp(WCRR.SlipVectorMagnitude * 50, 0, 50);
                     }
                     else
                     {
@@ -521,26 +508,26 @@ public class HotrodController : VehicleController
         //Spray dust on DirtyRoad
         try
         {
-            psDustRL.Stop();
-            psDustRR.Stop();
+            psDustL.Stop();
+            psDustR.Stop();
 
             if (RoadMat == "DirtyRoad")
             {
-                psDustRL.Play();
-                psDustRR.Play();
+                psDustL.Play();
+                psDustR.Play();
                 float SlipRL = Mathf.Clamp(WCRL.SlipVectorMagnitude, 0, 2f);
                 float SlipRR = Mathf.Clamp(WCRR.SlipVectorMagnitude, 0, 2f);
                 peDustL.rateOverTime = SlipRL * 80f;
                 peDustR.rateOverTime = SlipRR * 80f;
-                psDustRL.transform.localPosition = new Vector3(0, -0.4f, -WCRL.forwardFriction.slip / 6);
-                psDustRR.transform.localPosition = new Vector3(0, -0.4f, -WCRR.forwardFriction.slip / 6);
+                psDustL.transform.localPosition = new Vector3(0, -0.4f, -WCRL.forwardFriction.slip / 6);
+                psDustR.transform.localPosition = new Vector3(0, -0.4f, -WCRR.forwardFriction.slip / 6);
 
 
             }
             else
             {
-                psDustRL.Stop();
-                psDustRR.Stop();
+                psDustL.Stop();
+                psDustR.Stop();
             }
 
         }
@@ -658,6 +645,7 @@ public class HotrodController : VehicleController
         {
             if (cp.thisCollider.sharedMaterial.name == "CarBodyPhysicsMaterial" && cp.normal.y > 0.5f)
             {
+                    //Sticky has 0.6 friction instead of 0 and o.3 bounce instead of 0
                 cp.thisCollider.sharedMaterial = StickyCarBodyPhysicsMaterial;
             }
         }

@@ -40,10 +40,6 @@ public class CarController : VehicleController
     private bool IsSkiddingFL = false;
     private bool IsSkiddingFR = false;
     private AudioSource SkidAudioSource;
-    //private AudioSource EngineAudioSource;
-    //private AudioSource CoughAudioSource;
-    private AudioSource ClutchAudioSource;
-    //private AudioSource IdleAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;
     PhysicMaterial StickyCarBodyPhysicsMaterial;
@@ -109,6 +105,8 @@ public class CarController : VehicleController
         }
         catch { _rimSpin = false; }
 
+        StickyCarBodyPhysicsMaterial = (PhysicMaterial)Resources.Load("PhysicMaterials/StickyCarBodyPhysicsMaterial");
+        CarBodyPhysicsMaterial = (PhysicMaterial)Resources.Load("PhysicMaterials/CarBodyPhysicsMaterial");
 
         RLWheel = transform.Find("car/RLWheel").gameObject;
         RRWheel = transform.Find("car/RRWheel").gameObject;
@@ -694,6 +692,7 @@ public class CarController : VehicleController
             {
                 if (cp.thisCollider.sharedMaterial.name == "CarBodyPhysicsMaterial" && cp.normal.y > 0.5f)
                 {
+                    //Sticky has 0.6 friction instead of 0 and o.3 bounce instead of 0
                     cp.thisCollider.sharedMaterial = StickyCarBodyPhysicsMaterial;
                 }
             }

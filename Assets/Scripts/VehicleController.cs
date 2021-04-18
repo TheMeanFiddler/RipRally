@@ -66,7 +66,7 @@ public class VehicleController : MonoBehaviour, iVehicleController
     private AudioSource SkidAudioSource;
     protected AudioSource EngineAudioSource;
     protected AudioSource CoughAudioSource;
-    private AudioSource ClutchAudioSource;
+    protected AudioSource ClutchAudioSource;
     protected AudioSource IdleAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;

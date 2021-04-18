@@ -790,7 +790,7 @@ public void StartEngine()
     CoughAudioSource.mute = false;
 }
 
-void OnDestroy()
+public virtual void OnDestroy()
 {
     Gps = null;
     goCar = null;

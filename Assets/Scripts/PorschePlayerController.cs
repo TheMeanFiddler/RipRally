@@ -26,8 +26,9 @@ public class PorschePlayerController : PorscheController
 
         InputManager = InputFactory.ChooseInputManager();
     }
-        void OnDestroy()
+        public override void OnDestroy()
     {
+        base.OnDestroy();
         InputManager = null;
     }
 

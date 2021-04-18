@@ -27,7 +27,7 @@ public class CarPlayerController : CarController
         InputManager = InputFactory.ChooseInputManager();
     }
 
-    void OnDestroy()
+    protected override void OnDestroy()
     {
         base.OnDestroy();
         InputManager = null;

@@ -26,8 +26,9 @@ public class HotrodPlayerController : HotrodController
         InputManager = InputFactory.ChooseInputManager();
     }
 
-    void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
         InputManager = null;
     }
 

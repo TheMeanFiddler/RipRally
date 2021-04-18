@@ -4,22 +4,10 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
 
-public interface iVehicleController
+
+public class VehicleController : MonoBehaviour, iVehicleController
 {
-    iInputManager InputManager { get; set; }
-    GPS Gps { get; set; }
-
-    float motorForce { get; set; }
-
-    bool EndSkidmarks { get; set; }
-    void Init();
-    void StartEngine();
-
-
-}
-
-public class CarController : VehicleController
-{
+    public GPS Gps { get; set; }
     private byte _gpsTimer = 0;
     public iInputManager InputManager { get; set; }
     protected GameObject goCar;
@@ -87,10 +75,10 @@ public class CarController : VehicleController
     private bool IsSkiddingFR = false;
     public bool WasSkiddingFR { get; set; }
     private AudioSource SkidAudioSource;
-    //private AudioSource EngineAudioSource;
-    //private AudioSource CoughAudioSource;
+    protected AudioSource EngineAudioSource;
+    protected AudioSource CoughAudioSource;
     private AudioSource ClutchAudioSource;
-    //private AudioSource IdleAudioSource;
+    protected AudioSource IdleAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;
     Material RutMatrl;
@@ -119,7 +107,7 @@ public class CarController : VehicleController
     public string TestRoadMat { get; set; }
     List<InputStruct> Inputs = new List<InputStruct>();
 
-    //public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
+    public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
 
     void Awake()
     {
@@ -865,16 +853,5 @@ public class CarController : VehicleController
 
 
 
-public class CarMenuCarController : CarController
-{
 
-    void Start()
-    {
-        gameObject.AddComponent<CarMenuCarInput>();
-        InputManager = gameObject.GetComponent<CarMenuCarInput>();
-        GetComponentInChildren<FPCamController>().enabled = false;
-    }
-
-
-}
 

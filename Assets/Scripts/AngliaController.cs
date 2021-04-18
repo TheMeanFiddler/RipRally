@@ -836,7 +836,7 @@ public class AngliaController : MonoBehaviour, iVehicleController
         IdleAudioSource.Play();
     }
 
-    void OnDestroy()
+    protected virtual void OnDestroy()
     {
         Gps = null;
         goCar = null;

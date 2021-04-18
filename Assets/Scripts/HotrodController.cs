@@ -47,12 +47,14 @@ public class HotrodController : MonoBehaviour, iVehicleController
     protected WheelController WCFR;
     protected WheelController WCRL;
     protected WheelController WCRR;
-    private ParticleSystem peSprayFL;
-    private ParticleSystem peSprayFR;
-    private ParticleSystem peSprayFLFwd;
-    private ParticleSystem peSprayFRFwd;
-    private ParticleSystem peDustRR;
-    private ParticleSystem peDustRL;
+    private ParticleSystem psSprayFL;
+    private ParticleSystem psSprayFR;
+    private ParticleSystem psSprayLFwd;
+    private ParticleSystem psSprayRFwd;
+    private ParticleSystem psDustRR;
+    private ParticleSystem psDustRL;
+    ParticleSystem.EmissionModule peSprayL;
+    ParticleSystem.EmissionModule peSprayR;
     private Transform _trSkidMarks;
     private int RutLeftNodeCount = 0;
     private int RutRightNodeCount = 0;
@@ -124,12 +126,14 @@ public class HotrodController : MonoBehaviour, iVehicleController
         RutMatrl = (Material)Resources.Load("Prefabs/Materials/WheelRutGrey");
         SkidMatrl = (Material)Resources.Load("Prefabs/Materials/SkidMark");
 
-        peSprayFL = transform.Find("WheelColliders/WCRL/SprayFL").GetComponent<ParticleSystem>();
-        peSprayFR = transform.Find("WheelColliders/WCRR/SprayFR").GetComponent<ParticleSystem>();
-        peSprayFLFwd = transform.Find("WheelColliders/WCRL/SprayFLFwd").GetComponent<ParticleSystem>();
-        peSprayFRFwd = transform.Find("WheelColliders/WCRR/SprayFRFwd").GetComponent<ParticleSystem>();
-        peDustRL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
-        peDustRR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
+        psSprayFL = transform.Find("WheelColliders/WCRL/SprayFL").GetComponent<ParticleSystem>();
+        psSprayFR = transform.Find("WheelColliders/WCRR/SprayFR").GetComponent<ParticleSystem>();
+        psSprayLFwd = transform.Find("WheelColliders/WCRL/SprayFLFwd").GetComponent<ParticleSystem>();
+        psSprayRFwd = transform.Find("WheelColliders/WCRR/SprayFRFwd").GetComponent<ParticleSystem>();
+        psDustRL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
+        psDustRR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
+        peSprayL = psSprayFL.emission;
+        peSprayR = psSprayFR.emission;
         try
         {
             _fLRimRenderer = transform.Find("car/FLWheel/FLRim").GetComponent<Renderer>();
@@ -502,98 +506,93 @@ public class HotrodController : MonoBehaviour, iVehicleController
                 {
                     if (WCRL.motorTorque > 0)
                     {
-                        peSprayFLFwd.Stop();
-                        peSprayFL.Play();
-                        var vel = peSprayFL.velocityOverLifetime;
+                        psSprayLFwd.Stop();
+                        psSprayFL.Play();
+                        var vel = psSprayFL.velocityOverLifetime;
                         vel.x = WCRL.slipVectorNorm.y * Mathf.Sign(WCRL.motorTorque) * 3;
                         vel.y = 2;
                         vel.z = WCRL.slipVectorNorm.x * Mathf.Abs(WCRL.SlipVectorMagnitude) * 3.5f;
-                        //peSprayFL.emissionRate = Mathf.Clamp(WCRL.SlipVectorMagnitude * 30, 0, 30);
-                        ParticleSystem.EmissionModule e = peSprayFL.emission;
-                        e.rateOverTime = Mathf.Clamp(WCRL.SlipVectorMagnitude * 50, 0, 50);
+                        peSprayL.rateOverTime = Mathf.Clamp(WCRL.SlipVectorMagnitude * 50, 0, 50);
                     }
                     else   //goimg backwards
                     {
-                        peSprayFL.Stop();
-                        peSprayFLFwd.Play();
-                        var vel = peSprayFLFwd.velocityOverLifetime;
+                        psSprayFL.Stop();
+                        psSprayLFwd.Play();
+                        var vel = psSprayLFwd.velocityOverLifetime;
                         vel.x = WCRL.slipVectorNorm.y * Mathf.Sign(WCRL.motorTorque) * 3;
                         vel.y = Mathf.Abs(WCRL.SlipVectorMagnitude);
                         vel.z = WCRL.slipVectorNorm.x * Mathf.Abs(WCRL.SlipVectorMagnitude) * 3.5f;
                         //peSprayFLFwd.emissionRate = Mathf.Clamp(WCRL.SlipVectorMagnitude * 30, 0, 30);
-                        ParticleSystem.EmissionModule e = peSprayFLFwd.emission;
+                        ParticleSystem.EmissionModule e = psSprayLFwd.emission;
                         e.rateOverTime = Mathf.Clamp(WCRL.SlipVectorMagnitude * 30, 0, 30);
                     }
                 }
                 else
                 {
-                    peSprayFLFwd.Stop();
-                    peSprayFL.Stop();
+                    psSprayLFwd.Stop();
+                    psSprayFL.Stop();
                 }
 
                 if (groundedRR && ForwardSlipRR != 0)
                 {
                     if (WCRL.motorTorque > 0)
                     {
-                        peSprayFRFwd.Stop();
-                        peSprayFR.Play();
-                        var vel = peSprayFR.velocityOverLifetime;
+                        psSprayRFwd.Stop();
+                        psSprayFR.Play();
+                        var vel = psSprayFR.velocityOverLifetime;
                         vel.x = WCRR.slipVectorNorm.y * Mathf.Sign(WCRR.motorTorque) * 4;
                         vel.y = 2;
                         vel.z = WCRR.slipVectorNorm.x * Mathf.Abs(WCRR.SlipVectorMagnitude) * 5;
-                        //peSprayFR.emissionRate = Mathf.Clamp(WCRR.SlipVectorMagnitude * 50, 0, 50);
-                        ParticleSystem.EmissionModule e = peSprayFR.emission;
-                        e.rateOverTime = Mathf.Clamp(WCRR.SlipVectorMagnitude * 50, 0, 50);
+                        peSprayL.rateOverTime = Mathf.Clamp(WCRL.SlipVectorMagnitude * 50, 0, 50);
                     }
                     else
                     {
-                        peSprayFR.Stop();
-                        peSprayFRFwd.Play();
-                        var vel = peSprayFRFwd.velocityOverLifetime;
+                        psSprayFR.Stop();
+                        psSprayRFwd.Play();
+                        var vel = psSprayRFwd.velocityOverLifetime;
                         vel.x = WCRR.slipVectorNorm.y * Mathf.Sign(WCRR.motorTorque) * 4;
                         vel.y = 2;
                         vel.z = WCRR.slipVectorNorm.x * Mathf.Abs(WCRR.SlipVectorMagnitude) * 5;
                         //peSprayFRFwd.emissionRate = Mathf.Clamp(WCRR.SlipVectorMagnitude * 50, 0, 50);
-                        ParticleSystem.EmissionModule e = peSprayFRFwd.emission;
+                        ParticleSystem.EmissionModule e = psSprayRFwd.emission;
                         e.rateOverTime = Mathf.Clamp(WCRR.SlipVectorMagnitude * 30, 0, 30);
                     }
                 }
                 else
                 {
-                    peSprayFRFwd.Stop();
-                    peSprayFR.Stop();
+                    psSprayRFwd.Stop();
+                    psSprayFR.Stop();
                 }
-                //Fred.wizard@btinternet.com
             }
-            else { peSprayFR.Stop(); peSprayFRFwd.Stop(); peSprayFL.Stop(); peSprayFLFwd.Stop(); }
+            else { psSprayFR.Stop(); psSprayRFwd.Stop(); psSprayFL.Stop(); psSprayLFwd.Stop(); }
         }
         catch (Exception e) { Debug.Log(e.ToString()); }
 
         //Spray dust on DirtyRoad
         try
         {
-            peDustRL.Stop();
-            peDustRR.Stop();
+            psDustRL.Stop();
+            psDustRR.Stop();
 
             if (RoadMat == "DirtyRoad")
             {
-                peDustRL.Play();
-                peDustRR.Play();
+                psDustRL.Play();
+                psDustRR.Play();
                 float SlipRL = Mathf.Clamp(WCRL.SlipVectorMagnitude, 0, 2f);
                 float SlipRR = Mathf.Clamp(WCRR.SlipVectorMagnitude, 0, 2f);
-                ParticleSystem.EmissionModule emRL = peDustRL.emission;
+                ParticleSystem.EmissionModule emRL = psDustRL.emission;
                 emRL.rateOverTime = SlipRL * 80f;
-                ParticleSystem.EmissionModule emRR = peDustRR.emission;
+                ParticleSystem.EmissionModule emRR = psDustRR.emission;
                 emRR.rateOverTime = SlipRR * 80f;
-                peDustRL.transform.localPosition = new Vector3(0, -0.4f, -WCRL.forwardFriction.slip / 6);
-                peDustRR.transform.localPosition = new Vector3(0, -0.4f, -WCRR.forwardFriction.slip / 6);
+                psDustRL.transform.localPosition = new Vector3(0, -0.4f, -WCRL.forwardFriction.slip / 6);
+                psDustRR.transform.localPosition = new Vector3(0, -0.4f, -WCRR.forwardFriction.slip / 6);
 
 
             }
             else
             {
-                peDustRL.Stop();
-                peDustRR.Stop();
+                psDustRL.Stop();
+                psDustRR.Stop();
             }
 
         }
@@ -795,7 +794,7 @@ public void StartEngine()
     CoughAudioSource.mute = false;
 }
 
-void OnDestroy()
+protected virtual void OnDestroy()
 {
     Gps = null;
     goCar = null;

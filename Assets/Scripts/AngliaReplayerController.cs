@@ -54,9 +54,9 @@ public class AngliaReplayerController : MonoBehaviour, iVehicleController
         peDustRL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
         peDustRR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
         ParticleSystem.EmissionModule emRL = peDustRL.emission;
-        emRL.rate = 160f;
+        emRL.rateOverTime = 160f;
         ParticleSystem.EmissionModule emRR = peDustRR.emission;
-        emRR.rate = 160f;
+        emRR.rateOverTime = 160f;
 
         WCFL.Replayer = true;
         WCFR.Replayer = true;

@@ -10,7 +10,6 @@ public class VehicleController : MonoBehaviour, iVehicleController
     public GPS Gps { get; set; }
     protected byte _gpsTimer = 0;
     public iInputManager InputManager { get; set; }
-    protected GameObject goCar;
     protected Rigidbody _rb;
     protected GameObject FLWheel;
     protected GameObject FRWheel;
@@ -24,7 +23,7 @@ public class VehicleController : MonoBehaviour, iVehicleController
     protected Renderer _rLRimSpinRenderer;
     protected Renderer _rRRimRenderer;
     protected Renderer _rRRimSpinRenderer;
-    bool _rimSpin = true;
+    protected bool _rimSpin = true;
     Transform Skidmarks;
     public float SkidThresh { get; set; }
     public float motorForce { get; set; }
@@ -47,10 +46,14 @@ public class VehicleController : MonoBehaviour, iVehicleController
     protected ParticleSystem psSprayR;
     protected ParticleSystem psDustL;
     protected ParticleSystem psDustR;
-    protected ParticleSystem peSprayL;
-    protected ParticleSystem peSprayR;
-    protected ParticleSystem peDustL;
-    protected ParticleSystem peDustR;
+    protected ParticleSystem.EmissionModule peSprayL;
+    protected ParticleSystem.EmissionModule peSprayR;
+    protected ParticleSystem.EmissionModule peDustL;
+    protected ParticleSystem.EmissionModule peDustR;
+    protected ParticleSystem.MainModule pmSprayL;
+    protected ParticleSystem.MainModule pmSprayR;
+    protected ParticleSystem.MainModule pmDustL;
+    protected ParticleSystem.MainModule pmDustR;
 
     protected WheelController.WheelHit hitFL = new WheelController.WheelHit();
     protected WheelController.WheelHit hitFR = new WheelController.WheelHit();
@@ -67,8 +70,8 @@ public class VehicleController : MonoBehaviour, iVehicleController
     protected AudioSource IdleAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;
-    Material RutMatrl;
-    Material SkidMatrl;
+    protected Material RutMatrl;
+    protected Material SkidMatrl;
     public bool EndSkidmarks { get; set; }
     PhysicMaterial StickyCarBodyPhysicsMaterial;
     PhysicMaterial CarBodyPhysicsMaterial;
@@ -86,8 +89,8 @@ public class VehicleController : MonoBehaviour, iVehicleController
 
     public virtual void Awake()
     {
-        goCar = this.transform.Find("car").gameObject;
     }
+
     void Start()
     {
         txtTrace = GameObject.Find("txtTrace").GetComponent<Text>();
@@ -115,7 +118,7 @@ public class VehicleController : MonoBehaviour, iVehicleController
     protected virtual void OnDestroy()
     {
         Gps = null;
-        goCar = null;
+        InputManager = null;
     }
 
 

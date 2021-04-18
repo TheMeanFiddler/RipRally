@@ -7,54 +7,16 @@ using System;
 
 
 
-public class HotrodController : MonoBehaviour, iVehicleController
+public class HotrodController : VehicleController
 {
-    public GPS Gps { get; set; }
-    private byte _gpsTimer = 0;
-    public iInputManager InputManager { get; set; }
-    protected GameObject goCar;
-    protected Rigidbody _rb;
-    GameObject FLWheel;
-    GameObject FRWheel;
-    GameObject RLWheel;
-    GameObject RRWheel;
-    Renderer _fLRimRenderer;
-    Renderer _fLRimSpinRenderer;
-    Renderer _fRRimRenderer;
-    Renderer _fRRimSpinRenderer;
-    Renderer _rLRimRenderer;
-    Renderer _rLRimSpinRenderer;
-    Renderer _rRRimRenderer;
-    Renderer _rRRimSpinRenderer;
-    bool _rimSpin = true;
-    Transform Skidmarks;
-    public float SkidThresh { get; set; }
-    public float motorForce { get; set; }
-    public float steerForce { get; set; }
-    public float AntiRollForce { get; set; }
-    string RoadMat = "";
     DamageController _damageController;
-    AnimationCurve frontFrict;
-    AnimationCurve rearFrict;
-    AnimationCurve frontFrictTarmac;
-    AnimationCurve rearFrictTarmac;
-    AnimationCurve frontFrictDirtyRoad;
-    AnimationCurve rearFrictDirtyRoad;
-    AnimationCurve frontFrictDirt;
-    AnimationCurve rearFrictDirt;
     private int SegIdx;
-    protected WheelController WCFL;
-    protected WheelController WCFR;
-    protected WheelController WCRL;
-    protected WheelController WCRR;
-    private ParticleSystem psSprayFL;
-    private ParticleSystem psSprayFR;
+    private ParticleSystem psSprayL;
+    private ParticleSystem psSprayR;
     private ParticleSystem psSprayLFwd;
     private ParticleSystem psSprayRFwd;
     private ParticleSystem psDustRR;
     private ParticleSystem psDustRL;
-    ParticleSystem.EmissionModule peSprayL;
-    ParticleSystem.EmissionModule peSprayR;
     private Transform _trSkidMarks;
     private int RutLeftNodeCount = 0;
     private int RutRightNodeCount = 0;
@@ -67,10 +29,6 @@ public class HotrodController : MonoBehaviour, iVehicleController
     private FlatLineRenderer SkidMkLeft;
     private GameObject goSkidMkRight;
     private FlatLineRenderer SkidMkRight;
-    WheelController.WheelHit hitFL = new WheelController.WheelHit();
-    WheelController.WheelHit hitFR = new WheelController.WheelHit();
-    WheelController.WheelHit hitRL = new WheelController.WheelHit();
-    WheelController.WheelHit hitRR = new WheelController.WheelHit();
     private bool WasInAir = false;
     private bool IsRuttingRL = false;
     public bool WasRuttingRL { get; set; }
@@ -82,29 +40,21 @@ public class HotrodController : MonoBehaviour, iVehicleController
     public bool WasSkiddingRR { get; set; }
     List<GameObject> SkidMarks;
     private AudioSource SkidAudioSource;
-    protected AudioSource EngineAudioSource;
-    private AudioSource CoughAudioSource;
     protected AudioSource ClutchAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;
-    Material RutMatrl;
-    Material SkidMatrl;
-    public bool EndSkidmarks { get; set; }
     PhysicMaterial StickyCarBodyPhysicsMaterial;
     PhysicMaterial CarBodyPhysicsMaterial;
     protected float v;
     private float h;
     private bool Braking = false;
-    private float _maxBrakeForce;
     private float BrakeForce;
     private float FCoef;    //remember the default Fwd and Side Force COeffs cos we tinker with them
     private float SCoef;
 
-    public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
 
-    void Awake()
+    public override void Awake()
     {
-        goCar = this.transform.Find("car").gameObject;
         _damageController = GetComponent<DamageController>();
         _trSkidMarks = GameObject.Find("Skidmarks").transform;
         SkidAudioSource = GetComponent<AudioSource>();
@@ -124,14 +74,16 @@ public class HotrodController : MonoBehaviour, iVehicleController
         RutMatrl = (Material)Resources.Load("Prefabs/Materials/WheelRutGrey");
         SkidMatrl = (Material)Resources.Load("Prefabs/Materials/SkidMark");
 
-        psSprayFL = transform.Find("WheelColliders/WCRL/SprayFL").GetComponent<ParticleSystem>();
-        psSprayFR = transform.Find("WheelColliders/WCRR/SprayFR").GetComponent<ParticleSystem>();
+        psSprayL = transform.Find("WheelColliders/WCRL/SprayFL").GetComponent<ParticleSystem>();
+        psSprayR = transform.Find("WheelColliders/WCRR/SprayFR").GetComponent<ParticleSystem>();
         psSprayLFwd = transform.Find("WheelColliders/WCRL/SprayFLFwd").GetComponent<ParticleSystem>();
         psSprayRFwd = transform.Find("WheelColliders/WCRR/SprayFRFwd").GetComponent<ParticleSystem>();
         psDustRL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
         psDustRR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
-        peSprayL = psSprayFL.emission;
-        peSprayR = psSprayFR.emission;
+        peSprayL = psSprayL.emission;
+        peSprayR = psSprayR.emission;
+        pmSprayL = psSprayL.main;
+        pmSprayR = psSprayR.main;
         try
         {
             _fLRimRenderer = transform.Find("car/FLWheel/FLRim").GetComponent<Renderer>();
@@ -505,8 +457,8 @@ public class HotrodController : MonoBehaviour, iVehicleController
                     if (WCRL.motorTorque > 0)
                     {
                         psSprayLFwd.Stop();
-                        psSprayFL.Play();
-                        var vel = psSprayFL.velocityOverLifetime;
+                        psSprayL.Play();
+                        var vel = psSprayL.velocityOverLifetime;
                         vel.x = WCRL.slipVectorNorm.y * Mathf.Sign(WCRL.motorTorque) * 3;
                         vel.y = 2;
                         vel.z = WCRL.slipVectorNorm.x * Mathf.Abs(WCRL.SlipVectorMagnitude) * 3.5f;
@@ -514,7 +466,7 @@ public class HotrodController : MonoBehaviour, iVehicleController
                     }
                     else   //goimg backwards
                     {
-                        psSprayFL.Stop();
+                        psSprayL.Stop();
                         psSprayLFwd.Play();
                         var vel = psSprayLFwd.velocityOverLifetime;
                         vel.x = WCRL.slipVectorNorm.y * Mathf.Sign(WCRL.motorTorque) * 3;
@@ -528,7 +480,7 @@ public class HotrodController : MonoBehaviour, iVehicleController
                 else
                 {
                     psSprayLFwd.Stop();
-                    psSprayFL.Stop();
+                    psSprayL.Stop();
                 }
 
                 if (groundedRR && ForwardSlipRR != 0)
@@ -536,8 +488,8 @@ public class HotrodController : MonoBehaviour, iVehicleController
                     if (WCRL.motorTorque > 0)
                     {
                         psSprayRFwd.Stop();
-                        psSprayFR.Play();
-                        var vel = psSprayFR.velocityOverLifetime;
+                        psSprayR.Play();
+                        var vel = psSprayR.velocityOverLifetime;
                         vel.x = WCRR.slipVectorNorm.y * Mathf.Sign(WCRR.motorTorque) * 4;
                         vel.y = 2;
                         vel.z = WCRR.slipVectorNorm.x * Mathf.Abs(WCRR.SlipVectorMagnitude) * 5;
@@ -545,7 +497,7 @@ public class HotrodController : MonoBehaviour, iVehicleController
                     }
                     else
                     {
-                        psSprayFR.Stop();
+                        psSprayR.Stop();
                         psSprayRFwd.Play();
                         var vel = psSprayRFwd.velocityOverLifetime;
                         vel.x = WCRR.slipVectorNorm.y * Mathf.Sign(WCRR.motorTorque) * 4;
@@ -559,10 +511,10 @@ public class HotrodController : MonoBehaviour, iVehicleController
                 else
                 {
                     psSprayRFwd.Stop();
-                    psSprayFR.Stop();
+                    psSprayR.Stop();
                 }
             }
-            else { psSprayFR.Stop(); psSprayRFwd.Stop(); psSprayFL.Stop(); psSprayLFwd.Stop(); }
+            else { psSprayR.Stop(); psSprayRFwd.Stop(); psSprayL.Stop(); psSprayLFwd.Stop(); }
         }
         catch (Exception e) { Debug.Log(e.ToString()); }
 
@@ -578,10 +530,8 @@ public class HotrodController : MonoBehaviour, iVehicleController
                 psDustRR.Play();
                 float SlipRL = Mathf.Clamp(WCRL.SlipVectorMagnitude, 0, 2f);
                 float SlipRR = Mathf.Clamp(WCRR.SlipVectorMagnitude, 0, 2f);
-                ParticleSystem.EmissionModule emRL = psDustRL.emission;
-                emRL.rateOverTime = SlipRL * 80f;
-                ParticleSystem.EmissionModule emRR = psDustRR.emission;
-                emRR.rateOverTime = SlipRR * 80f;
+                peDustL.rateOverTime = SlipRL * 80f;
+                peDustR.rateOverTime = SlipRR * 80f;
                 psDustRL.transform.localPosition = new Vector3(0, -0.4f, -WCRL.forwardFriction.slip / 6);
                 psDustRR.transform.localPosition = new Vector3(0, -0.4f, -WCRR.forwardFriction.slip / 6);
 
@@ -722,7 +672,7 @@ public class HotrodController : MonoBehaviour, iVehicleController
 }
 
 
-public virtual void GetInputFromInputManager()
+public new virtual void GetInputFromInputManager()
 {
     if (InputManager == null) return;
     //Accel and Brake
@@ -786,17 +736,6 @@ void Update()
 
 }
 
-public void StartEngine()
-{
-    EngineAudioSource.mute = false;
-    CoughAudioSource.mute = false;
-}
-
-protected virtual void OnDestroy()
-{
-    Gps = null;
-    goCar = null;
-}
 
 
 }

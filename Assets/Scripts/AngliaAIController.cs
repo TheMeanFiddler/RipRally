@@ -9,8 +9,7 @@ public class AngliaAIController : AngliaController
 {
     public override void Init()
     {
-        Transform trPlayer = goCar.transform.parent;
-        GameObject goPlayer = trPlayer.gameObject;
+        GameObject goPlayer = this.gameObject;
         InputManager = goPlayer.AddComponent<AngliaAIInput>();
         Gps = new GPS(goPlayer);
         ((AngliaAIInput)InputManager).Gps = Gps;

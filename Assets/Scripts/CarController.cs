@@ -20,7 +20,6 @@ public interface iVehicleController
 
 public class CarController : VehicleController
 {
-    bool _rimSpin = true;
     UnityEngine.Object SkidPrefab;
     Transform Skidmarks;
     private int SegIdx;
@@ -47,8 +46,6 @@ public class CarController : VehicleController
     //private AudioSource IdleAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;
-    Material RutMatrl;
-    Material SkidMatrl;
     PhysicMaterial StickyCarBodyPhysicsMaterial;
     PhysicMaterial CarBodyPhysicsMaterial;
     float _rearslipCoeff;
@@ -91,7 +88,14 @@ public class CarController : VehicleController
         psSprayR = transform.Find("WheelColliders/WCFR/SprayFR").GetComponent<ParticleSystem>();
         psDustL = transform.Find("WheelColliders/WCFL/DustFL").GetComponent<ParticleSystem>();
         psDustR = transform.Find("WheelColliders/WCFR/DustFR").GetComponent<ParticleSystem>();
-
+        peSprayL = psSprayL.emission;
+        peSprayR = psSprayR.emission;
+        peDustL = psDustL.emission;
+        peDustR = psDustR.emission;
+        pmSprayL = psSprayL.main;
+        pmSprayR = psSprayR.main;
+        pmDustL = psDustL.main;
+        pmDustR = psDustR.main;
         try
         {
             _fLRimRenderer = transform.Find("car/FLWheel/FLRim").GetComponent<Renderer>();
@@ -499,27 +503,27 @@ public class CarController : VehicleController
                 if (groundedFL && ((ForwardSlipFL < 0 && h < -0.01f) || (ForwardSlipFL > 0 && h > 0.01f)) && Mathf.Abs(WCFL.rpm) > 0)
                 {
                     psSprayL.Play();
-                    psSprayL.startSpeed = -Mathf.Clamp((Mathf.Abs(ForwardSlipFL) + Mathf.Abs(SidewaysSlipFL)) * 14, 0, 7);
+                    pmSprayL.startSpeed = -Mathf.Clamp((Mathf.Abs(ForwardSlipFL) + Mathf.Abs(SidewaysSlipFL)) * 14, 0, 7);
                     // THis was for the dust - peSprayFL.startSpeed = -Mathf.Abs(ForwardSlipFL) / 2;
-                    psSprayL.emissionRate = (Mathf.Abs(ForwardSlipFL) + Mathf.Abs(SidewaysSlipFL)) * 100;
+                    peSprayL.rateOverTime = (Mathf.Abs(ForwardSlipFL) + Mathf.Abs(SidewaysSlipFL)) * 100;
                 }
                 else
                 {
                     psSprayL.Stop();
-                    psSprayL.startSpeed = 0;
+                    pmSprayL.startSpeed = 0;
                 }
 
                 psSprayR.transform.localRotation = Quaternion.Euler(45, WCFR.steerAngle + (ForwardSlipFR >= 0 ? 0 : 180), 0);
                 if (groundedFR && ((ForwardSlipFR < 0 && h > 0.01f) || (ForwardSlipFR > 0 && h < -0.01f)) && Mathf.Abs(WCFR.rpm) > 0)
                 {
                     psSprayR.Play();
-                    psSprayR.startSpeed = -Mathf.Clamp((Mathf.Abs(ForwardSlipFR) + Mathf.Abs(SidewaysSlipFR)) * 14, 0, 7);
-                    psSprayR.emissionRate = (Mathf.Abs(ForwardSlipFR) + Mathf.Abs(SidewaysSlipFR)) * 100;
+                    pmSprayR.startSpeed = -Mathf.Clamp((Mathf.Abs(ForwardSlipFR) + Mathf.Abs(SidewaysSlipFR)) * 14, 0, 7);
+                    peSprayR.rateOverTime = (Mathf.Abs(ForwardSlipFR) + Mathf.Abs(SidewaysSlipFR)) * 100;
                 }
                 else
                 {
                     psSprayR.Stop();
-                    psSprayR.startSpeed = 0;
+                    pmSprayR.startSpeed = 0;
                 }
             }
             else { psSprayR.Stop(); psSprayL.Stop(); psSprayR.startSpeed = 0; psSprayL.startSpeed = 0; }
@@ -538,10 +542,8 @@ public class CarController : VehicleController
                 psDustR.Play();
                 float SlipFL = Mathf.Clamp(WCFL.SlipVectorMagnitude, 0, 0.1f);
                 float SlipFR = Mathf.Clamp(WCFR.SlipVectorMagnitude, 0, 0.1f);
-                ParticleSystem.EmissionModule emRL = psDustL.emission;
-                emRL.rate = SlipFL * 500f;
-                ParticleSystem.EmissionModule emRR = psDustR.emission;
-                emRR.rate = SlipFR * 500f;
+                peDustL.rateOverTime = SlipFL * 500f;
+                peDustR.rateOverTime = SlipFR * 500f;
                 psDustL.transform.localPosition = new Vector3(0, -0.4f, -WCFL.forwardFriction.slip / 6);
                 psDustR.transform.localPosition = new Vector3(0, -0.4f, -WCFR.forwardFriction.slip / 6);
 

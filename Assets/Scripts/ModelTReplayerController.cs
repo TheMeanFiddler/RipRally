@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
 
-public class ModelTReplayerController : CarController
+public class ModelTReplayerController : ModelTController
 {
 
     public override void Init()

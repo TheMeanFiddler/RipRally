@@ -6,7 +6,6 @@ using System;
 
 public class HotrodReplayerController : MonoBehaviour, iVehicleController
 {
-
     public GPS Gps { get; set; }
     public iInputManager InputManager { get; set; }
     public float motorForce { get; set; }
@@ -52,15 +51,15 @@ public class HotrodReplayerController : MonoBehaviour, iVehicleController
         peSprayFL = transform.Find("WheelColliders/WCRL/SprayFL").GetComponent<ParticleSystem>();
         peSprayFR = transform.Find("WheelColliders/WCRR/SprayFR").GetComponent<ParticleSystem>();
         ParticleSystem.EmissionModule emSprayRL = peSprayFL.emission;
-        emSprayRL.rate = 160f;
+        emSprayRL.rateOverTime = 160f;
         ParticleSystem.EmissionModule emSprayRR = peSprayFR.emission;
-        emSprayRL.rate = 160f;
+        emSprayRL.rateOverTime = 160f;
         peDustRL = transform.Find("WheelColliders/WCRL/DustFL").GetComponent<ParticleSystem>();
         peDustRR = transform.Find("WheelColliders/WCRR/DustFR").GetComponent<ParticleSystem>();
         ParticleSystem.EmissionModule emRL = peDustRL.emission;
-        emRL.rate = 160f;
+        emRL.rateOverTime = 160f;
         ParticleSystem.EmissionModule emRR = peDustRR.emission;
-        emRR.rate = 160f;
+        emRR.rateOverTime = 160f;
 
         WCFL.Replayer = true;
         WCFR.Replayer = true;

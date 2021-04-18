@@ -54,9 +54,9 @@ public class CarReplayerController : MonoBehaviour, iVehicleController
         peDustFL = transform.Find("WheelColliders/WCFL/DustFL").GetComponent<ParticleSystem>();
         peDustFR = transform.Find("WheelColliders/WCFR/DustFR").GetComponent<ParticleSystem>();
         ParticleSystem.EmissionModule emRL = peDustFL.emission;
-        emRL.rate = 160f;
+        emRL.rateOverTime = 160f;
         ParticleSystem.EmissionModule emRR = peDustFR.emission;
-        emRR.rate = 160f;
+        emRR.rateOverTime = 160f;
 
         WCFL.Replayer = true;
         WCFR.Replayer = true;
@@ -158,5 +158,8 @@ public class CarReplayerController : MonoBehaviour, iVehicleController
     {
         throw new NotImplementedException();
     }
+
+        
+
 
 }

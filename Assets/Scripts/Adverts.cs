@@ -7,7 +7,6 @@ class Adverts : MonoBehaviour, IUnityAdsListener
     public int CoinsReward { get; set; }
     public bool Recover { get; set; }
 
-#if UNITY_ANDROID || UNITY_IOS || UNITY_IPHONE
     void Start()
     {
 #if UNITY_ANDROID
@@ -72,12 +71,12 @@ public void PlayVideo100Coins()
 
     public void OnUnityAdsDidError(string message)
     {
-        // Log the error.
+       Debug.Log("Ad Errored");
     }
 
     public void OnUnityAdsDidStart(string surfacingId)
     {
-        // Optional actions to take when the end-users triggers an ad.
+        Debug.Log("Ad Started");
     }
 
     // When the object that subscribes to ad events is destroyed, remove the listener:
@@ -88,6 +87,7 @@ public void PlayVideo100Coins()
 
     public void OnUnityAdsDidFinish(string surfacingId, ShowResult result)
     {
+        Debug.Log("Ad finished");
         switch (result)
         {
             case ShowResult.Finished:
@@ -129,8 +129,6 @@ public void PlayVideo100Coins()
         }
         Recover = false;
     }
-
-#endif
 
     public void ClosePanel()
     {

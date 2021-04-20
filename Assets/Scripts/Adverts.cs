@@ -1,90 +1,74 @@
 ﻿using UnityEngine;
 using UnityEngine.Advertisements;
+using GoogleMobileAds.Api;
+using GoogleMobileAds.Common;
+using System;
 
-class Adverts : MonoBehaviour, IUnityAdsListener
-{
-
+class Adverts : MonoBehaviour
+{ 
     public int CoinsReward { get; set; }
     public bool Recover { get; set; }
+    private RewardedAd rewardedAd;
+    string recoverAdUnit_ID;
 
     void Start()
     {
+        // Initialize the Google Mobile Ads SDK.
+        MobileAds.Initialize(initStatus => { });
 #if UNITY_ANDROID
-        Advertisement.Initialize("1490467", false);
+        recoverAdUnit_ID = "ca-app-pub-1062887910651588/8581588982";
 #endif
 #if UNITY_IOS || UNITY_IPHONE
-        Advertisement.Initialize("1490468", false);
+        recoverAdUnit_ID = "ca-app-pub-1062887910651588/8940681634";
 #endif
-        Advertisement.AddListener(this);
+
+
     }
 
-public void PlayVideo100Coins()
+
+
+    public void PlayVideo100Coins()
     {
-        if (Advertisement.IsReady("rewardedVideo"))
-        {
+
             CoinsReward = 100;
-            Advertisement.Show("rewardedVideo");
-        }
-        else
-        {
-            Main.Instance.PopupMsg("Sorry offline no advert");
-        }
     }
 
     public void PlayVideoDoubleCoins(int coinsWon)
     {
 
-        if (Advertisement.IsReady("rewardedVideo"))
-        {
+
             CoinsReward = coinsWon;
-            Advertisement.Show("rewardedVideo");
-        }
-        else
-        {
-            Main.Instance.PopupMsg("Sorry offline no advert");
-        }
+
+
     }
 
     public void PlayVideoRecover()
     {
-        if (Advertisement.IsReady("rewardedVideo"))
-        {
+
             CoinsReward = 0;
             Recover = true;
-            Advertisement.Show("rewardedVideo");
-        }
-        else
+        this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
+        this.rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
+        // Create an empty ad request.
+        AdRequest request = new AdRequest.Builder().Build();
+        // Load the rewarded ad with the request.
+        this.rewardedAd.LoadAd(request);
+    }
+
+    private void HandleUserEarnedReward(object sender, Reward args)
+    {
+        string type = args.Type;
+        switch (type)
         {
-            Main.Instance.PopupMsg("Sorry offline no advert");
+            case "Recover":
+                DrivingPlayManager.Current.PlayerCarManager.Recover();
+                Recover = false;
+                break;
         }
     }
 
 
-    public void OnUnityAdsReady(string surfacingId)
-    {
-        // If the ready Ad Unit or legacy Placement is rewarded, show the ad:
-        if (surfacingId == "rewardedVideo")
-        {
-            // Optional actions to take when theAd Unit or legacy Placement becomes ready (for example, enable the rewarded ads button)
-        }
-    }
-
-    public void OnUnityAdsDidError(string message)
-    {
-       Debug.Log("Ad Errored");
-    }
-
-    public void OnUnityAdsDidStart(string surfacingId)
-    {
-        Debug.Log("Ad Started");
-    }
-
-    // When the object that subscribes to ad events is destroyed, remove the listener:
-    public void OnDestroy()
-    {
-        Advertisement.RemoveListener(this);
-    }
-
+    /*
     public void OnUnityAdsDidFinish(string surfacingId, ShowResult result)
     {
         Debug.Log("Ad finished");
@@ -129,9 +113,38 @@ public void PlayVideo100Coins()
         }
         Recover = false;
     }
-
+    */
     public void ClosePanel()
     {
+        this.rewardedAd.OnUserEarnedReward -= HandleUserEarnedReward;
         Destroy(this.gameObject);
     }
 }
+
+/*
+Set up app-ads.txt for your apps
+=================================
+The app-ads.txt initiative helps fight fraud and safeguard your app ads earnings. Use these instructions to set up app-ads.txt for your AdMob apps.
+
+If you haven't already, create an app-ads.txt file using the spec provided by IAB Tech Lab.
+Copy and paste the following code snippet into your app-ads.txt file:
+google.com, pub-1062887910651588, DIRECT, f08c47fec0942fa0
+content_copy
+Publish your app-ads.txt on the root of your developer website (for example, sampledomain.com/app-ads.txt). Make sure the domain is entered exactly as listed on Google Play or the App Store.
+Wait at least 24 hours for AdMob to crawl and verify your app-ads.txt file.
+Open AdMob, go to your apps, and click the app-ads.txt tab to check your app-ads.txt status.
+
+Setting Test Devices
+======================
+I've set up iPhone 6 as a test device. Havent done Galaxy s8 yet
+ 
+Ads in test mode
+================
+Ads served by the AdMob Network will display a label that lets you know you’re in test mode. Look for the test mode label before clicking on an ad. Clicking on production ads can result in a policy violation for invalid traffic.
+
+Using mediation and test devices
+-----------------------
+If you’re using AdMob mediation or Open Bidding, test mode applies to ads served from the AdMob Network only and does not apply to ads served by other networks. 
+
+Be sure that you've instructed your third-party ad source will serve ads in test mode. 
+     */

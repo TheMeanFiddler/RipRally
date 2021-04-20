@@ -13,4 +13,7 @@ RipRally-Failed2 Copy of Failed
 
 16/4/2-21
 So I got all the way to the RaceSelector Scene. Then the Excavating hung
-Need to create a development build (Option In Dashboard Advanced Settings)
+It was cos the desert terrain had no terraindata
+
+19/4
+Latest crap - UnityAds callback isn't firing

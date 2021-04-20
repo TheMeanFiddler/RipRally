@@ -44,9 +44,9 @@ class Adverts : MonoBehaviour
 
     public void PlayVideoRecover()
     {
-
-            CoinsReward = 0;
-            Recover = true;
+        Main.Instance.PopupMsg("recover");
+        CoinsReward = 0;
+        Recover = true;
         this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
         this.rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
         // Create an empty ad request.

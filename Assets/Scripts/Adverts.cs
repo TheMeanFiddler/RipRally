@@ -48,11 +48,18 @@ class Adverts : MonoBehaviour
         CoinsReward = 0;
         Recover = true;
         this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
+        this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
         this.rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
         // Load the rewarded ad with the request.
         this.rewardedAd.LoadAd(request);
+    }
+
+    private void HandleRewardedAdLoaded(object sender, EventArgs args)
+    {
+        Main.Instance.PopupMsg("show");
+        this.rewardedAd.Show();
     }
 
     private void HandleUserEarnedReward(object sender, Reward args)

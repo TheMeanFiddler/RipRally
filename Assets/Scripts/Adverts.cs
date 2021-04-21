@@ -49,11 +49,23 @@ class Adverts : MonoBehaviour
         Recover = true;
         this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
         this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
+        this.rewardedAd.OnAdFailedToLoad += RewardedAd_OnAdFailedToLoad;
+        this.rewardedAd.OnAdFailedToShow += RewardedAd_OnAdFailedToShow;
         this.rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
         // Load the rewarded ad with the request.
         this.rewardedAd.LoadAd(request);
+    }
+
+    private void RewardedAd_OnAdFailedToShow(object sender, AdErrorEventArgs e)
+    {
+        Main.Instance.PopupMsg("Ad Failed to Show");
+    }
+
+    private void RewardedAd_OnAdFailedToLoad(object sender, AdErrorEventArgs e)
+    {
+        Main.Instance.PopupMsg("Ad Faild to Load");
     }
 
     private void HandleRewardedAdLoaded(object sender, EventArgs args)

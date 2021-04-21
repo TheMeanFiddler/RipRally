@@ -21,8 +21,8 @@ class Adverts : MonoBehaviour
 #if UNITY_IOS || UNITY_IPHONE
         recoverAdUnit_ID = "ca-app-pub-1062887910651588/8940681634";
 #endif
-
-
+        //this is the admob test advert
+        recoverAdUnit_ID = "ca-app-pub-3940256099942544/1712485313";
     }
 
 

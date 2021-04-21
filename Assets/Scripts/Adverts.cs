@@ -77,9 +77,11 @@ class Adverts : MonoBehaviour
     private void HandleUserEarnedReward(object sender, Reward args)
     {
         string type = args.Type;
+        Debug.Log(type);
         switch (type)
         {
-            case "Recover":
+            case "Reward":
+                Debug.Log(type);
                 DrivingPlayManager.Current.PlayerCarManager.Recover();
                 Recover = false;
                 break;

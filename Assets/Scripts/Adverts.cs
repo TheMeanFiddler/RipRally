@@ -80,11 +80,15 @@ class Adverts : MonoBehaviour
         Debug.Log(type);
         switch (type)
         {
-            case "Reward":
-                Debug.Log(type);
+            case "Recover":
                 DrivingPlayManager.Current.PlayerCarManager.Recover();
                 Recover = false;
                 break;
+            default:
+                DrivingPlayManager.Current.PlayerCarManager.Recover();
+                Recover = false;
+                break;
+
         }
     }
 

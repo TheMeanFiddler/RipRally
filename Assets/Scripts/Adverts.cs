@@ -65,7 +65,7 @@ class Adverts : MonoBehaviour
 
     private void RewardedAd_OnAdFailedToLoad(object sender, AdErrorEventArgs e)
     {
-        Main.Instance.PopupMsg("Ad Faild to Load");
+        Main.Instance.PopupMsg("Faild Load " + e.Message);
     }
 
     private void HandleRewardedAdLoaded(object sender, EventArgs args)

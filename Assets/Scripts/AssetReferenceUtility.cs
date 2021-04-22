@@ -16,13 +16,19 @@ public class AssetReferenceUtility : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    public void StartMusic()
+    {
         _music = GetComponent<AudioSource>();
-        Addressables.LoadAssetAsync<AudioClip>(ClipToLoad).Completed +=AudioLoaded;
+        Addressables.LoadAssetAsync<AudioClip>(ClipToLoad).Completed += AudioLoaded;
         Addressables.LoadAssetAsync<GameObject>(objectToLoad).Completed += ObjectLoadDone;
     }
 
     private void AudioLoaded(AsyncOperationHandle<AudioClip> obj)
     {
+        Main.Instance.PopupMsg("Audio Loaded");
         if (obj.Status == AsyncOperationStatus.Succeeded)
         {
             AudioClip loadedClip = obj.Result;
@@ -38,6 +44,7 @@ public class AssetReferenceUtility : MonoBehaviour
             GameObject loadedObject = obj.Result;
             Debug.Log("Successfully loaded object.");
             instantiatedObject = Instantiate(loadedObject);
+            instantiatedObject.transform.position = new Vector3(1000, -298, 25);
             Debug.Log("Successfully instantiated object.");
 
         }

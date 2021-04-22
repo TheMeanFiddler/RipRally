@@ -10,9 +10,7 @@ public class AssetReferenceUtility : MonoBehaviour
     AudioSource _music;
     public AssetReference ClipToLoad;
     public AssetReference objectToLoad;
-    public AssetReference accessoryObjectToLoad;
     private GameObject instantiatedObject;
-    private GameObject instantiatedAccessoryObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +19,7 @@ public class AssetReferenceUtility : MonoBehaviour
 
     public void StartMusic()
     {
+        Main.Instance.PopupMsg("Start Music");
         _music = GetComponent<AudioSource>();
         Addressables.LoadAssetAsync<AudioClip>(ClipToLoad).Completed += AudioLoaded;
         Addressables.LoadAssetAsync<GameObject>(objectToLoad).Completed += ObjectLoadDone;
@@ -46,7 +45,6 @@ public class AssetReferenceUtility : MonoBehaviour
             instantiatedObject = Instantiate(loadedObject);
             instantiatedObject.transform.position = new Vector3(1000, -298, 25);
             Debug.Log("Successfully instantiated object.");
-
         }
     }
     /*

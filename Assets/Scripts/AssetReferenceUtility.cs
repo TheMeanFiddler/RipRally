@@ -21,7 +21,7 @@ public class AssetReferenceUtility : MonoBehaviour
     {
         Main.Instance.PopupMsg("Start Music");
         _music = GetComponent<AudioSource>();
-        Addressables.LoadAssetAsync<AudioClip>(ClipToLoad).Completed += AudioLoaded;
+        //Addressables.LoadAssetAsync<AudioClip>(ClipToLoad).Completed += AudioLoaded;
         Addressables.LoadAssetAsync<GameObject>(objectToLoad).Completed += ObjectLoadDone;
     }
 

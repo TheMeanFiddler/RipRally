@@ -30,6 +30,7 @@ public interface iMain
     int Laps { get; set; }
     void ShowCoins();
     bool CreateTrackCoroutineFinished { get; set; }
+    MusicLoader music { get; set; }
     }
 
 public class Main : Singleton<Main>, iMain
@@ -62,6 +63,7 @@ public class Main : Singleton<Main>, iMain
     public bool GameSceneLoaded { get; set; }
     bool LoadMenuSceneRunning;
     GameObject goTipCanvas;
+    public MusicLoader music { get; set; }
 
     void Awake()
     {
@@ -81,6 +83,7 @@ public class Main : Singleton<Main>, iMain
             Tut.transform.localScale = Vector3.one;
             Tut.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         }
+        music = GameObject.Find("MusicPlayer").GetComponent<MusicLoader>();
     }
 
     /*
@@ -128,6 +131,8 @@ public class Main : Singleton<Main>, iMain
     {
         if (OldScene.name == null) return;
         Debug.Log("Main SceneChange from " + OldScene.name + " to " + NewScene.name);
+        if (NewScene.name == "SceneSelector") return;
+        if(NewScene.name == "RaceSelector") music.FadeOut(3);
         int Level = NewScene.buildIndex;
         if (Level < 5) return;
         AudioListener.volume = Settings.Instance.SFXVolume;

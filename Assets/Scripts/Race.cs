@@ -53,11 +53,13 @@ public class Race : iRace
     private GameObject goStartingLine;
     private GameObject goChequeredFlag;
     public List<LapStat> LapStats { get; set; }
+    MusicLoader music;
 
     public Race()
     {
         Racers = new List<iRacer>();
         Started = false;
+        music = GameObject.Find("MusicPlayer").GetComponent<MusicLoader>();
     }
 
     public void ArrangeGrid()

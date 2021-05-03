@@ -14,6 +14,7 @@ public interface iRace : IDisposable
     int AirBonus { get; set; }
     int HogBonus { get; set; }
     List<iRacer> Racers { get; set; }
+    iRacer PlayerRacer { get; set; }
     List<LapStat> LapStats { get; set; }
     bool Started { get; set; }
     void ArrangeGrid();
@@ -46,6 +47,7 @@ public class Race : iRace
     public int AirBonus { get; set; }
     public int HogBonus { get; set; }
     public List<iRacer> Racers { get; set; }
+    public iRacer PlayerRacer { get; set; }
     private bool Paused = false;
     public bool Started { get; set; }
     private Text txtTimer;
@@ -53,13 +55,11 @@ public class Race : iRace
     private GameObject goStartingLine;
     private GameObject goChequeredFlag;
     public List<LapStat> LapStats { get; set; }
-    MusicLoader music;
 
     public Race()
     {
         Racers = new List<iRacer>();
         Started = false;
-        music = GameObject.Find("MusicPlayer").GetComponent<MusicLoader>();
     }
 
     public void ArrangeGrid()
@@ -84,6 +84,7 @@ public class Race : iRace
         if (Main.Instance.Ghost && PlayerManager.Type != "Replayer")
             DrivingPlayManager.Current.GhostCarManager.VehicleController.Init();
         LapStats = new List<LapStat>();
+        PlayerRacer = DrivingPlayManager.Current.PlayerCarManager.Racer;
     }
 
 
@@ -181,6 +182,7 @@ public class Race : iRace
 
     protected virtual void Dispose(bool b)
     {
+        PlayerRacer = null;
         foreach (iRacer r in Racers)
         {
             r.Dispose();
@@ -205,6 +207,7 @@ public class Racer : iRacer, IDisposable
     private GPS _playerGps;
     private iRacer _playerRacer;
     private DamageController _damCtrl;
+    MusicPlayer music;
     public int Lap { get; set; }
     public float LapStartTime { get; set; }
     int LapStartFrame;
@@ -223,6 +226,7 @@ public class Racer : iRacer, IDisposable
 
     public Racer(iVehicleManager vm, DamageController dc, iRace Race, bool IsMachine)
     {
+        isMachine = IsMachine;
         _Race = Race;
         VehicleManager = vm;
         _damCtrl = dc;
@@ -235,8 +239,12 @@ public class Racer : iRacer, IDisposable
             _playerGps = DrivingPlayManager.Current.PlayerCarManager.Gps;
             _playerRacer = DrivingPlayManager.Current.PlayerCarManager.Racer;
         }
-        isMachine = IsMachine;
-        if (!isMachine) _scorer = new Scorer(vm, _gps);
+        else
+        {
+            _scorer = new Scorer(vm, _gps);
+            music = GameObject.Find("MusicPlayer").GetComponent<MusicPlayer>();
+        }
+        
         RoadSegCount = Road.Instance.Segments.Count;
         if (goRacer.name == "Vehicle1") _vehicleController.motorForce *= 1.1f;   //This car is more powerful. It jumps backward and comes up behind you
         _damCtrl.OnCollisionExitEvent += StartHogTimer;
@@ -344,6 +352,9 @@ public class Racer : iRacer, IDisposable
                 CamSelector.Instance.SelectCam("Simple");
                 ChFlag = true;
             }
+            if (_gps.SqrSpeed > 49) { music.Play(MusicPlayer.MusicType.Hard, MusicPlayer.PlaySched.Now); }
+            else
+            { music.Play(MusicPlayer.MusicType.Soft, MusicPlayer.PlaySched.Now); }
         }
 
     }

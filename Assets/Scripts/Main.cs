@@ -30,7 +30,7 @@ public interface iMain
     int Laps { get; set; }
     void ShowCoins();
     bool CreateTrackCoroutineFinished { get; set; }
-    MusicLoader music { get; set; }
+    MusicPlayer music { get; set; }
     }
 
 public class Main : Singleton<Main>, iMain
@@ -63,7 +63,7 @@ public class Main : Singleton<Main>, iMain
     public bool GameSceneLoaded { get; set; }
     bool LoadMenuSceneRunning;
     GameObject goTipCanvas;
-    public MusicLoader music { get; set; }
+    public MusicPlayer music { get; set; }
 
     void Awake()
     {
@@ -83,7 +83,7 @@ public class Main : Singleton<Main>, iMain
             Tut.transform.localScale = Vector3.one;
             Tut.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         }
-        music = GameObject.Find("MusicPlayer").GetComponent<MusicLoader>();
+        music = GameObject.Find("MusicPlayer").GetComponent<MusicPlayer>();
     }
 
     /*

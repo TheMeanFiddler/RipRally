@@ -8,26 +8,27 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 
 /*How it works
-Runs a random ambient clip on repeat until the DPM loads
-Then it gets to the end of the bar and plays a coda
+Runs a random Soft clip on repeat until the RaceSelector loads
+Then it fades out
 It loads the Hard music into the second AudioSource
 When the player car accelerates it plays the hard music
-When the car stops it plays the coda
+When the car stops it plays the Soft
 
 
 */
 //https://gamedevbeginner.com/ultimate-guide-to-playscheduled-in-unity/
-public class MusicLoader : MonoBehaviour
+public class MusicPlayer : MonoBehaviour
 {
     AudioSource[] audioSrcs;
     int tgl = 0;
     double _currStart;
     double _nextStart = 100000;
-    List<IResourceLocation> AmbientCatalog = new List<IResourceLocation>();
+    List<IResourceLocation> SoftCatalog = new List<IResourceLocation>();
     List<IResourceLocation> HardCatalog = new List<IResourceLocation>();
     List<IResourceLocation> CodaCatalog = new List<IResourceLocation>();
     List<AudioClip> CodaClips = new List<AudioClip>();
     string _key = "Gm";
+    MusicType currType = MusicType.None;
 
     private void Awake()
     {
@@ -40,14 +41,14 @@ public class MusicLoader : MonoBehaviour
     IEnumerator Start()
     {
         AsyncOperationHandle<IList<IResourceLocation>> catHandle;
-        //Returns any IResourceLocations that are mapped to the key "Ambient" and "Gm"
-        catHandle = Addressables.LoadResourceLocationsAsync(new string[] { "Ambient", _key }, Addressables.MergeMode.Intersection);
-        //catHandle = Addressables.LoadResourceLocationsAsync("Ambient, Em");
+        //Returns any IResourceLocations that are mapped to the key "Soft" and "Gm"
+        catHandle = Addressables.LoadResourceLocationsAsync(new string[] { "Soft", _key }, Addressables.MergeMode.Intersection);
+        //catHandle = Addressables.LoadResourceLocationsAsync("Soft, Em");
         yield return catHandle;
 
         foreach (var k in catHandle.Result)
         {
-            AmbientCatalog.Add(k);
+            SoftCatalog.Add(k);
         }
 
         Addressables.Release(catHandle);
@@ -77,13 +78,7 @@ public class MusicLoader : MonoBehaviour
         Addressables.Release(catHandle);
 
 
-        int rnd = Random.Range(0, AmbientCatalog.Count);
-        AsyncOperationHandle<AudioClip> handle4 = Addressables.LoadAssetAsync<AudioClip>(AmbientCatalog[rnd]);
-        yield return handle4;
-        audioSrcs[0].clip = handle4.Result;
-        _currStart = AudioSettings.dspTime;
-        audioSrcs[0].PlayScheduled(AudioSettings.dspTime + 0.5);
-        _currStart = AudioSettings.dspTime + 0.5;
+        Play(MusicType.Soft, PlaySched.Now);
         yield return 0;
     }
 
@@ -92,38 +87,58 @@ public class MusicLoader : MonoBehaviour
         Debug.Log(exception.GetType());
     }
 
-    void Update()
-    {
 
-        if (AudioSettings.dspTime > _nextStart - 1)
+    public enum MusicType { Soft, Hard, Coda, None}
+    public enum PlaySched { Now, XFade, NextBar, End}
+    
+    public void Play(MusicType type, PlaySched t)
+    {
+        if (currType == type) return;
+        if (type == MusicType.Soft)
         {
-            PlayAmbient();
+            int rnd = Random.Range(0, SoftCatalog.Count);
+            StartCoroutine(LoadAndPlay(SoftCatalog[rnd], t));
         }
-    }
-
-    public void PlayAmbient()
-    {
-        int rnd = Random.Range(0, AmbientCatalog.Count);
-        Addressables.LoadAssetAsync<AudioClip>(AmbientCatalog[rnd]).Completed += AudioLoaded;
-    }
-
-    public void PlayHard()
-    {
-        int rnd = Random.Range(0, HardCatalog.Count);
-        Addressables.LoadAssetAsync<AudioClip>(HardCatalog[rnd]).Completed += AudioLoaded;
-    }
-
-    private void AudioLoaded(AsyncOperationHandle<AudioClip> obj)
-    {
-        if (obj.Status == AsyncOperationStatus.Succeeded)
+        if (type == MusicType.Hard)
         {
-            Main.Instance.PopupMsg("Audio Loaded");
-            AudioClip loadedClip = obj.Result;
-            audioSrcs[tgl].clip = loadedClip;
-            audioSrcs[tgl].PlayScheduled(AudioSettings.dspTime + 0.1);
-            _currStart = AudioSettings.dspTime + 0.1;
+            int rnd = Random.Range(0, HardCatalog.Count);
+            StartCoroutine(LoadAndPlay(HardCatalog[rnd], t));
         }
+        currType = type;
     }
+
+
+    IEnumerator LoadAndPlay(IResourceLocation loc, PlaySched t)
+    {
+        Debug.Log("LoadAndPlay");
+        AsyncOperationHandle<AudioClip> hndl = Addressables.LoadAssetAsync<AudioClip>(loc);
+        yield return hndl;
+        if (hndl.Status == AsyncOperationStatus.Succeeded)
+        {
+            AudioClip loadedClip = hndl.Result;
+            audioSrcs[1-tgl].clip = loadedClip;
+            double swapTime = 0.01;
+            if (t == PlaySched.Now)
+            {
+                Debug.Log(loadedClip.name + "Now on " + (1 - tgl).ToString());
+                swapTime = AudioSettings.dspTime + 0.01;
+                audioSrcs[1 - tgl].PlayScheduled(AudioSettings.dspTime + 0.01);
+            }
+            if (t == PlaySched.End)
+            {
+                swapTime = AudioSettings.dspTime + 10;
+                audioSrcs[1 - tgl].PlayScheduled(AudioSettings.dspTime + 10);
+            }
+
+            Debug.Log("OK");
+            StartCoroutine(SwapSrcs(0.01));
+
+        }
+        Addressables.Release(hndl);
+        yield return 0;
+    }
+
+
 
     public void FadeOut(float secs)
     {
@@ -141,6 +156,7 @@ public class MusicLoader : MonoBehaviour
         }
         audioSrcs[tgl].Stop();
         audioSrcs[tgl].volume = 1;
+        StartCoroutine(SwapSrcs());
         yield return 0;
     }
     
@@ -165,13 +181,16 @@ public class MusicLoader : MonoBehaviour
 
 
 
-    IEnumerator SwapSrcs(double swapTime)
+    IEnumerator SwapSrcs(double swapTime = 0)
     {
-        while (AudioSettings.dspTime < swapTime)
-        { yield return new WaitForEndOfFrame(); }
+        if (swapTime != 0)
+        {
+            while (AudioSettings.dspTime < swapTime)
+            { yield return new WaitForEndOfFrame(); }
+        }
         audioSrcs[tgl].Stop();
         tgl = 1 - tgl;
-
+        Debug.Log("Swap to " + tgl);
         yield return 0;
     }
 }

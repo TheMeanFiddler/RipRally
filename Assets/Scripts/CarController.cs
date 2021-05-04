@@ -55,7 +55,6 @@ public class CarController : VehicleController
     private float DelayedSlip = 0f;
     private int SlipDelayTimer = 50;
     private float _prevh;
-    private float BrakeForce;
 
 
     //public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
@@ -716,14 +715,15 @@ public class CarController : VehicleController
 
     void Update()
     {
-
-        if (_gpsTimer == 0)
+        if (Gps != null)
         {
-            try { Gps.UpdateSegIdx(); }
-            catch { }
-            _gpsTimer = 2;
+            if (_gpsTimer == 0)
+            {
+                Gps.UpdateSegIdx();
+                _gpsTimer = 2;
+            }
+            _gpsTimer--;
         }
-        _gpsTimer--;
 
         //Engine Sound
 

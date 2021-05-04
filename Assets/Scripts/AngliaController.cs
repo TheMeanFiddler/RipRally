@@ -45,7 +45,6 @@ public class AngliaController : VehicleController
     PhysicMaterial StickyCarBodyPhysicsMaterial;
     PhysicMaterial CarBodyPhysicsMaterial;
     private bool Braking = false;
-    private float BrakeForce;
     private float FCoef;    //remember the default Fwd and Side Force COeffs cos we tinker with them
     private float SCoef;
 
@@ -670,7 +669,7 @@ public class AngliaController : VehicleController
 
     }
 
-    public virtual void GetInputFromInputManager()
+    public new virtual void GetInputFromInputManager()
     {
         if (InputManager == null) return;
         //Accel and Brake
@@ -686,13 +685,15 @@ public class AngliaController : VehicleController
 
     void Update()
     {
-        if (_gpsTimer == 0)
+        if (Gps != null)
         {
-            try { Gps.UpdateSegIdx(); }
-            catch { }
-            _gpsTimer = 2;
+            if (_gpsTimer == 0)
+            {
+                Gps.UpdateSegIdx();
+                _gpsTimer = 2;
+            }
+            _gpsTimer--;
         }
-        _gpsTimer--;
 
         //Engine Sound
         if (WCRL.motorTorque > 0 && WCRL.brakeTorque==0)

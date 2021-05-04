@@ -353,8 +353,8 @@ public class Racer : iRacer, IDisposable
                 ChFlag = true;
             }
             var s = _gps.Speed;
-            if (s > 4) { music.SetMix(1); }
-            else { music.SetMix(0); }
+            if (s > 4) { music.SetMix(s/20); }
+            //else { music.SetMix(0); }
 
         }
     }

@@ -50,7 +50,6 @@ public class PorscheController : VehicleController
     protected float v;
     private float h;
     private bool Braking = false;
-    private float BrakeForce;
     private float FCoef;    //remember the default Fwd and Side Force COeffs cos we tinker with them
     private float SCoef;
 
@@ -684,13 +683,15 @@ public class PorscheController : VehicleController
 
     void Update()
     {
-        if (_gpsTimer == 0)
+        if (Gps != null)
         {
-            try { Gps.UpdateSegIdx(); }
-            catch { }
-            _gpsTimer = 2;
+            if (_gpsTimer == 0)
+            {
+                Gps.UpdateSegIdx();
+                _gpsTimer = 2;
+            }
+            _gpsTimer--;
         }
-        _gpsTimer--;
 
         //Engine Sound
 

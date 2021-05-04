@@ -80,7 +80,7 @@ public class VehicleController : MonoBehaviour, iVehicleController
     protected float v;
     protected float h;
     protected float _maxBrakeForce;
-    private float BrakeForce;
+    protected float BrakeForce;
     protected Text txtTrace;
     protected Text txtTrace2;
     public string TestRoadMat { get; set; }

@@ -16,7 +16,8 @@ public sealed class Settings
     public bool TutorialIntroHide = false;
     public bool TutorialBuildHide = false;
     public bool TutorialShopHide = false;
-    public float SFXVolume = 1;
+    public float SFXVolume = 0.5f;
+    public bool MusicOn = true;
     public float SteeringPosX = -200;
     public float SteeringPosY = 100;
     public float AccelPos = 200;

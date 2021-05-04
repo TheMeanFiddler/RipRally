@@ -52,6 +52,7 @@ public class SettingsView:MonoBehaviour
         }
 
         GameObject.Find("sldSoundFXVolume").GetComponent<Slider>().value = Settings.Instance.SFXVolume;
+        GameObject.Find("tglMusicOn").GetComponent<Toggle>().isOn = Settings.Instance.MusicOn;
         GameObject.Find("tglZip").GetComponent<Toggle>().isOn = Settings.Instance.Zip;
         pnlSoundSettings.SetActive(false);
 
@@ -156,6 +157,12 @@ public class SettingsView:MonoBehaviour
     {
         Settings.Instance.SFXVolume = vol;
 
+    }
+
+    public void tglMusicOn(bool isOn)
+    {
+        Settings.Instance.MusicOn = isOn;
+        MusicPlayer.Instance.IsOn(isOn);
     }
 }
 

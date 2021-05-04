@@ -132,10 +132,8 @@ public class Main : Singleton<Main>, iMain
         if (OldScene.name == null) return;
         Debug.Log("Main SceneChange from " + OldScene.name + " to " + NewScene.name);
         if (NewScene.name == "SceneSelector") return;
-        if(NewScene.name == "RaceSelector") music.FadeOut(3);
         int Level = NewScene.buildIndex;
         if (Level < 5) return;
-        AudioListener.volume = Settings.Instance.SFXVolume;
         if (OnLevelLoaded != null)
             OnLevelLoaded(Level);
 

@@ -352,11 +352,12 @@ public class Racer : iRacer, IDisposable
                 CamSelector.Instance.SelectCam("Simple");
                 ChFlag = true;
             }
-            if (_gps.SqrSpeed > 49) { music.Play(MusicPlayer.MusicType.Hard, MusicPlayer.PlaySched.Now); }
-            else
-            { music.Play(MusicPlayer.MusicType.Soft, MusicPlayer.PlaySched.Now); }
+            var s = _gps.Speed;
+            if (s > 4) { music.SetMix(1); }
+            else { music.SetMix(0); }
+            //else
+            //{ music.Play(MusicPlayer.MusicType.Soft, MusicPlayer.PlaySched.Now); }
         }
-
     }
 
     public void GetOpposition()

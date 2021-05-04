@@ -52,6 +52,7 @@ public class AngliaController : VehicleController
 
     public override void Awake()
     {
+        base.Awake();
         _damageController = GetComponent<DamageController>();
         SkidPrefab = Resources.Load("Prefabs/SkidmarkPrefab");
         _trSkidMarks = GameObject.Find("Skidmarks").transform;

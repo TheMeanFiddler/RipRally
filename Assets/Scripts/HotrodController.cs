@@ -38,6 +38,7 @@ public class HotrodController : VehicleController
     private AudioSource SkidAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;
+
     PhysicMaterial StickyCarBodyPhysicsMaterial;
     PhysicMaterial CarBodyPhysicsMaterial;
     private bool Braking = false;
@@ -48,6 +49,7 @@ public class HotrodController : VehicleController
 
     public override void Awake()
     {
+        base.Awake();
         _damageController = GetComponent<DamageController>();
         _trSkidMarks = GameObject.Find("Skidmarks").transform;
         SkidAudioSource = GetComponent<AudioSource>();
@@ -287,27 +289,22 @@ public class HotrodController : VehicleController
             float _rearSlideSlip = Vector3.Angle(_vel, transform.forward);
             if (WCRL.angularVelocity > 0)
             {
-
                 //Easy cornering - The GPS can manage the reverse steering
                 float BendAnglePerSec = 0;
                 UnityEngine.Profiling.Profiler.BeginSample("CalcNewF");
                 if (Gps.CurrBend != null)
                 {
-                    UnityEngine.Profiling.Profiler.BeginSample("CalcBendAnglperSec");
                     BendAnglePerSec = Gps.CurrBend.AnglePerSeg * Gps.SegsPerSec;
-                    UnityEngine.Profiling.Profiler.EndSample();
                     float CorrectionAnglePerSec = (BendAnglePerSec - _rb.angularVelocity.y * 57.3f);
                     if (Mathf.Sign(CorrectionAnglePerSec) != Mathf.Sign(BendAnglePerSec))     //only apply the correction if oversteering
                     { h += CorrectionAnglePerSec; }
                     h = Mathf.Clamp(h, -40, 40);
                 }
-                UnityEngine.Profiling.Profiler.EndSample();
-                UnityEngine.Profiling.Profiler.BeginSample("ApplyCoeffs");
+
                 WCRL.fFriction.forceCoefficient = FCoef;
                 WCRR.fFriction.forceCoefficient = FCoef;
                 WCRL.sideFriction.forceCoefficient = SCoef;
                 WCRR.sideFriction.forceCoefficient = SCoef;
-                UnityEngine.Profiling.Profiler.EndSample();
 
                 Vector3 cross = Vector3.Cross(_vel, transform.forward);
                 if (Mathf.Abs(h) < 3 || Mathf.Sign(cross.y) != Mathf.Sign(h))
@@ -318,7 +315,7 @@ public class HotrodController : VehicleController
                     WCRR.fFriction.forceCoefficient *= (1 + Mathf.Abs(_rearSlideSlip) / 90f);
                 }
             }   //going forwrds
-            UnityEngine.Profiling.Profiler.EndSample();
+
             //spinout
             //if (_rearSlideSlip > 90) { WCRL.sFriction.forceCoefficient = 0.2f; WCRR.sFriction.forceCoefficient = 0.2f; }
         }

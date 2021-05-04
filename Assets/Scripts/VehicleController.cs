@@ -87,8 +87,13 @@ public class VehicleController : MonoBehaviour, iVehicleController
 
     public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
 
+    /// <summary>
+    /// Set SFX volumes
+    /// </summary>
     public virtual void Awake()
     {
+        foreach (AudioSource s in GetComponentsInChildren<AudioSource>())
+            s.volume = Settings.Instance.SFXVolume;
     }
 
     void Start()

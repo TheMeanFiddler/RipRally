@@ -7,46 +7,10 @@ using System;
 
 
 
-public class PorscheController : MonoBehaviour, iVehicleController
+public class PorscheController : VehicleController
 {
-    public GPS Gps { get; set; }
-    private byte _gpsTimer = 0;
-    public iInputManager InputManager { get; set; }
-    protected GameObject goCar;
-    protected Rigidbody _rb;
-    GameObject FLWheel;
-    GameObject FRWheel;
-    GameObject RLWheel;
-    GameObject RRWheel;
-    Renderer _fLRimRenderer;
-    Renderer _fLRimSpinRenderer;
-    Renderer _fRRimRenderer;
-    Renderer _fRRimSpinRenderer;
-    Renderer _rLRimRenderer;
-    Renderer _rLRimSpinRenderer;
-    Renderer _rRRimRenderer;
-    Renderer _rRRimSpinRenderer;
-    bool _rimSpin = true;
-    Transform Skidmarks;
-    public float SkidThresh { get; set; }
-    public float motorForce { get; set; }
-    public float steerForce { get; set; }
-    public float AntiRollForce { get; set; }
-    string RoadMat = "";
     DamageController _damageController;
-    AnimationCurve frontFrict;
-    AnimationCurve rearFrict;
-    AnimationCurve frontFrictTarmac;
-    AnimationCurve rearFrictTarmac;
-    AnimationCurve frontFrictDirtyRoad;
-    AnimationCurve rearFrictDirtyRoad;
-    AnimationCurve frontFrictDirt;
-    AnimationCurve rearFrictDirt;
     private int SegIdx;
-    protected WheelController WCFL;
-    protected WheelController WCFR;
-    protected WheelController WCRL;
-    protected WheelController WCRR;
     private ParticleSystem peSprayFL;
     private ParticleSystem peSprayFR;
     private ParticleSystem peSprayFLFwd;
@@ -67,10 +31,6 @@ public class PorscheController : MonoBehaviour, iVehicleController
     private FlatLineRenderer SkidMkLeft;
     private GameObject goSkidMkRight;
     private FlatLineRenderer SkidMkRight;
-    WheelController.WheelHit hitFL = new WheelController.WheelHit();
-    WheelController.WheelHit hitFR = new WheelController.WheelHit();
-    WheelController.WheelHit hitRL = new WheelController.WheelHit();
-    WheelController.WheelHit hitRR = new WheelController.WheelHit();
     private bool WasInAir = false;
     private bool IsRuttingRL = false;
     public bool WasRuttingRL { get; set; }
@@ -82,29 +42,22 @@ public class PorscheController : MonoBehaviour, iVehicleController
     public bool WasSkiddingRR { get; set; }
     List<GameObject> SkidMarks;
     private AudioSource SkidAudioSource;
-    protected AudioSource EngineAudioSource;
-    private AudioSource CoughAudioSource;
-    protected AudioSource ClutchAudioSource;
     float ClutchStartTime = 0;
     private float _prevEngineTorque;
-    Material RutMatrl;
-    Material SkidMatrl;
-    public bool EndSkidmarks { get; set; }
+
     PhysicMaterial StickyCarBodyPhysicsMaterial;
     PhysicMaterial CarBodyPhysicsMaterial;
     protected float v;
     private float h;
     private bool Braking = false;
-    private float _maxBrakeForce;
     private float BrakeForce;
     private float FCoef;    //remember the default Fwd and Side Force COeffs cos we tinker with them
     private float SCoef;
 
-    public virtual void Init() { } //this is used by the car player controller to add the input manager and the speedo
 
-    void Awake()
+    public override void Awake()
     {
-        goCar = this.transform.Find("car").gameObject;
+        base.Awake();
         _damageController = GetComponent<DamageController>();
         _trSkidMarks = GameObject.Find("Skidmarks").transform;
         SkidAudioSource = GetComponent<AudioSource>();
@@ -236,10 +189,6 @@ public class PorscheController : MonoBehaviour, iVehicleController
         */
 
     }
-    //KL Planning 616234
-    //Garage door 2134
-    //borough.planning@west-norfolk.gov.uk
-    //PP-06503945
 
     // Update is called once per frame
     //FixedUpdate is called for every physics calculation
@@ -265,7 +214,6 @@ public class PorscheController : MonoBehaviour, iVehicleController
             WCRR.motorTorque = Mathf.Clamp(WCRR.motorTorque, 0, 10000);
         }
 
-        UnityEngine.Profiling.Profiler.BeginSample("RimSpin");
         if (_rimSpin)
         {
             if (Mathf.Abs(WCFL.rpm) > 300)
@@ -309,7 +257,6 @@ public class PorscheController : MonoBehaviour, iVehicleController
                 _rRRimSpinRenderer.enabled = false;
             }
         }
-        UnityEngine.Profiling.Profiler.EndSample();
 
         //Adapt the tyre slip according to the road type
 
@@ -455,7 +402,7 @@ public class PorscheController : MonoBehaviour, iVehicleController
         {
             travelL = 1.0f;
         }
-        if (WCRL.SlipVectorMagnitude > SkidThresh*2.25f && RoadMat == "Tarmac")
+        if (WCRL.SlipVectorMagnitude > SkidThresh * 2.25f && RoadMat == "Tarmac")
         { IsSkiddingRL = true; }
         else { IsSkiddingRL = false; }
 
@@ -469,7 +416,7 @@ public class PorscheController : MonoBehaviour, iVehicleController
             travelR = 1.0f;
         }
 
-        if (WCRR.SlipVectorMagnitude > SkidThresh*2.25f && RoadMat == "Tarmac")
+        if (WCRR.SlipVectorMagnitude > SkidThresh * 2.25f && RoadMat == "Tarmac")
             IsSkiddingRR = true;
         else IsSkiddingRR = false;
 
@@ -598,7 +545,7 @@ public class PorscheController : MonoBehaviour, iVehicleController
         #region Wheel Ruts and Skidmarks Region
         //Make Wheel ruts
 
-        if ((RoadMat == "Dirt" || RoadMat == "DirtyRoad") && groundedRL && WCRL.SlipVectorMagnitude > SkidThresh/2) IsRuttingRL = true; else IsRuttingRL = false;
+        if ((RoadMat == "Dirt" || RoadMat == "DirtyRoad") && groundedRL && WCRL.SlipVectorMagnitude > SkidThresh / 2) IsRuttingRL = true; else IsRuttingRL = false;
         //Debug.Log(IsRuttingRL.ToString() + WasRuttingRL.ToString());
         if (IsRuttingRL)
         {
@@ -620,7 +567,7 @@ public class PorscheController : MonoBehaviour, iVehicleController
         }
         WasRuttingRL = IsRuttingRL;
 
-        if ((RoadMat == "Dirt" || RoadMat == "DirtyRoad") && groundedRR && WCRR.SlipVectorMagnitude > SkidThresh/2) IsRuttingRR = true; else IsRuttingRR = false;
+        if ((RoadMat == "Dirt" || RoadMat == "DirtyRoad") && groundedRR && WCRR.SlipVectorMagnitude > SkidThresh / 2) IsRuttingRR = true; else IsRuttingRR = false;
 
         if (IsRuttingRR)
         {
@@ -664,7 +611,7 @@ public class PorscheController : MonoBehaviour, iVehicleController
             }
         }
         WasSkiddingRL = IsSkiddingRL;
-        
+
         if (IsSkiddingRR)
         {
             if (!WasSkiddingRR)
@@ -699,43 +646,44 @@ public class PorscheController : MonoBehaviour, iVehicleController
     }
 
     void OnCollisionStay(Collision coll)
-{
-    foreach (ContactPoint cp in coll.contacts)
     {
-        try
+        foreach (ContactPoint cp in coll.contacts)
         {
-            if (cp.thisCollider.sharedMaterial.name == "CarBodyPhysicsMaterial" && cp.normal.y > 0.5f)
+            try
             {
-                cp.thisCollider.sharedMaterial = StickyCarBodyPhysicsMaterial;
+                if (cp.thisCollider.sharedMaterial.name == "CarBodyPhysicsMaterial" && cp.normal.y > 0.5f)
+                {
+                    //Sticky has 0.6 friction instead of 0 and o.3 bounce instead of 0
+                    cp.thisCollider.sharedMaterial = StickyCarBodyPhysicsMaterial;
+                }
+            }
+            catch { }
+            float bcx = cp.thisCollider.bounds.center.x;
+            if (Mathf.Abs(bcx) > 5 && Vector3.Angle(transform.up, Vector3.up) > 90 && _rb.angularVelocity.sqrMagnitude < 3)
+            {
+                _rb.AddRelativeTorque(Vector3.forward * 10 * bcx, ForceMode.Force);
             }
         }
-        catch { }
-        float bcx = cp.thisCollider.bounds.center.x;
-        if (Mathf.Abs(bcx) > 5 && Vector3.Angle(transform.up, Vector3.up) > 90 && _rb.angularVelocity.sqrMagnitude < 3)
-        {
-            _rb.AddRelativeTorque(Vector3.forward * 10 * bcx, ForceMode.Force);
-        }
+
     }
 
-}
 
-
-public virtual void GetInputFromInputManager()
-{
-    if (InputManager == null) return;
-    //Accel and Brake
-    v = InputManager.ZMovement() * motorForce;
-    BrakeForce = InputManager.BrakeForce * _maxBrakeForce;
-    if (BrakeForce > 0) Braking = true;
-    //STEERING
-    h = InputManager.XMovement();
+    public new virtual void GetInputFromInputManager()
+    {
+        if (InputManager == null) return;
+        //Accel and Brake
+        v = InputManager.ZMovement() * motorForce;
+        BrakeForce = InputManager.BrakeForce * _maxBrakeForce;
+        if (BrakeForce > 0) Braking = true;
+        //STEERING
+        h = InputManager.XMovement();
         // / (1 + GetComponent<Rigidbody>().velocity.magnitude / 20); //The last number: bigger means sharper turns at high speed
-    h = Mathf.Clamp(h, -40, 40);
-}
+        h = Mathf.Clamp(h, -40, 40);
+    }
 
 
-void Update()
-{
+    void Update()
+    {
         if (_gpsTimer == 0)
         {
             try { Gps.UpdateSegIdx(); }
@@ -748,54 +696,47 @@ void Update()
 
 
         if (_prevEngineTorque > 0 && WCRL.motorTorque == 0)
-    {
-        EngineAudioSource.Stop();
-        ClutchAudioSource.Play();
-        ClutchStartTime = Time.time;
-    }
-    if (_prevEngineTorque == 0 && WCRL.motorTorque == 0 && Time.time > ClutchStartTime + 1f && EngineAudioSource.isPlaying == false)
-    {
-        EngineAudioSource.pitch = 0.2f;
-        EngineAudioSource.Play();
-    }
-    if (Mathf.Abs(WCRL.motorTorque) > 0)
-    {
-        ClutchAudioSource.Stop();
-        float _pitch;
-        float rpm;
-        float Wheelrpm = Mathf.Abs((WCFL.rpm < WCFR.rpm) ? WCFL.rpm : WCFR.rpm);
-        if (Wheelrpm > 1499) Wheelrpm = 1499;
-        if (EngineAudioSource.isPlaying == false) EngineAudioSource.Play();
-        if (Wheelrpm < 300)
         {
-            rpm = -Wheelrpm;
-            _pitch = rpm / 600 - 0.5f;
+            EngineAudioSource.Stop();
+            ClutchAudioSource.Play();
+            ClutchStartTime = Time.time;
         }
-        else
+        if (_prevEngineTorque == 0 && WCRL.motorTorque == 0 && Time.time > ClutchStartTime + 1f && EngineAudioSource.isPlaying == false)
         {
-            rpm = -(Wheelrpm - 300) % 300;
-            _pitch = (rpm / 600 - 0.5f);
-
+            EngineAudioSource.pitch = 0.2f;
+            EngineAudioSource.Play();
         }
-        EngineAudioSource.pitch = _pitch * 1.5f;
+        if (Mathf.Abs(WCRL.motorTorque) > 0)
+        {
+            ClutchAudioSource.Stop();
+            float _pitch;
+            float rpm;
+            float Wheelrpm = Mathf.Abs((WCFL.rpm < WCFR.rpm) ? WCFL.rpm : WCFR.rpm);
+            if (Wheelrpm > 1499) Wheelrpm = 1499;
+            if (EngineAudioSource.isPlaying == false) EngineAudioSource.Play();
+            if (Wheelrpm < 300)
+            {
+                rpm = -Wheelrpm;
+                _pitch = rpm / 600 - 0.5f;
+            }
+            else
+            {
+                rpm = -(Wheelrpm - 300) % 300;
+                _pitch = (rpm / 600 - 0.5f);
+
+            }
+            EngineAudioSource.pitch = _pitch * 1.5f;
+        }
+        CoughAudioSource.mute = (WCRL.motorTorque != 0);
+        _prevEngineTorque = WCRL.motorTorque;
+
     }
-    CoughAudioSource.mute = (WCRL.motorTorque != 0);
-    _prevEngineTorque = WCRL.motorTorque;
 
-}
-
-public void StartEngine()
-{
-    EngineAudioSource.mute = false;
-    CoughAudioSource.mute = false;
-}
-
-public virtual void OnDestroy()
-{
-    Gps = null;
-    goCar = null;
-}
-
+    public override void StartEngine()
+    {
+        EngineAudioSource.mute = false;
+        CoughAudioSource.mute = false;
+    }
 
 }
 

@@ -19,6 +19,9 @@ When the car stops it plays the Soft
 //https://gamedevbeginner.com/ultimate-guide-to-playscheduled-in-unity/
 public class MusicPlayer : MonoBehaviour
 {
+    AudioSource _softAudioSrc;
+    AudioSource _hardAudioSrc;
+
     AudioSource[] audioSrcs;
     int tgl = 0;
     double _currStart;
@@ -33,7 +36,8 @@ public class MusicPlayer : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(this);
-        audioSrcs = GetComponents<AudioSource>();
+        _softAudioSrc = GetComponents<AudioSource>()[0];
+        _hardAudioSrc = GetComponents<AudioSource>()[1];
         ResourceManager.ExceptionHandler = CustomExceptionHandler;
         if (Random.Range(0, 2) == 0) _key = "Em";
     }
@@ -76,9 +80,27 @@ public class MusicPlayer : MonoBehaviour
         }
 
         Addressables.Release(catHandle);
-
-
-        Play(MusicType.Soft, PlaySched.Now);
+        //Load the soft clip
+        int rnd = Random.Range(0, SoftCatalog.Count);
+        AsyncOperationHandle<AudioClip> hndl = Addressables.LoadAssetAsync<AudioClip>(SoftCatalog[rnd]);
+        yield return hndl;
+        if(hndl.Status == AsyncOperationStatus.Succeeded)
+        {
+            _softAudioSrc.clip = hndl.Result;
+        }
+        Addressables.Release(hndl);
+        //Load the hard clip
+        rnd = Random.Range(0, HardCatalog.Count);
+        AsyncOperationHandle<AudioClip>  hndl2 = Addressables.LoadAssetAsync<AudioClip>(HardCatalog[rnd]);
+        yield return hndl2;
+        if (hndl2.Status == AsyncOperationStatus.Succeeded)
+        {
+            _hardAudioSrc.clip = hndl2.Result;
+        }
+        Addressables.Release(hndl2);
+        _softAudioSrc.PlayScheduled(AudioSettings.dspTime + 0.1);
+        _hardAudioSrc.PlayScheduled(AudioSettings.dspTime + 0.1);
+        _hardAudioSrc.volume = 0;
         yield return 0;
     }
 
@@ -91,24 +113,21 @@ public class MusicPlayer : MonoBehaviour
     public enum MusicType { Soft, Hard, Coda, None}
     public enum PlaySched { Now, XFade, NextBar, End}
     
-    public void Play(MusicType type, PlaySched t)
+    public void Play(MusicType mtyp, PlaySched sched)
     {
-        if (currType == type) return;
-        if (type == MusicType.Soft)
-        {
-            int rnd = Random.Range(0, SoftCatalog.Count);
-            StartCoroutine(LoadAndPlay(SoftCatalog[rnd], t));
-        }
-        if (type == MusicType.Hard)
-        {
-            int rnd = Random.Range(0, HardCatalog.Count);
-            StartCoroutine(LoadAndPlay(HardCatalog[rnd], t));
-        }
-        currType = type;
+        if (mtyp == currType) return;
+        if (mtyp == MusicType.Hard);
+        StartCoroutine(Play(HardCatalog[0], sched));
     }
 
+    public void SetMix(float val)
+    {
+        val = Mathf.Clamp01(val);
+        _hardAudioSrc.volume = val;
+        _softAudioSrc.volume = 1 - val;
+    }
 
-    IEnumerator LoadAndPlay(IResourceLocation loc, PlaySched t)
+    IEnumerator Play(IResourceLocation loc, PlaySched t)
     {
         Debug.Log("LoadAndPlay");
         AsyncOperationHandle<AudioClip> hndl = Addressables.LoadAssetAsync<AudioClip>(loc);

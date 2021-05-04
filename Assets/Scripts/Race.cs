@@ -242,7 +242,7 @@ public class Racer : iRacer, IDisposable
         else
         {
             _scorer = new Scorer(vm, _gps);
-            music = GameObject.Find("MusicPlayer").GetComponent<MusicPlayer>();
+            music = MusicPlayer.Instance;
         }
         
         RoadSegCount = Road.Instance.Segments.Count;
@@ -355,8 +355,7 @@ public class Racer : iRacer, IDisposable
             var s = _gps.Speed;
             if (s > 4) { music.SetMix(1); }
             else { music.SetMix(0); }
-            //else
-            //{ music.Play(MusicPlayer.MusicType.Soft, MusicPlayer.PlaySched.Now); }
+
         }
     }
 

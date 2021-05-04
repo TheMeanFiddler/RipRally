@@ -17,7 +17,7 @@ When the car stops it plays the Soft
 
 */
 //https://gamedevbeginner.com/ultimate-guide-to-playscheduled-in-unity/
-public class MusicPlayer : MonoBehaviour
+public class MusicPlayer : Singleton<MusicPlayer>
 {
     AudioSource _softAudioSrc;
     AudioSource _hardAudioSrc;
@@ -36,8 +36,10 @@ public class MusicPlayer : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(this);
-        _softAudioSrc = GetComponents<AudioSource>()[0];
-        _hardAudioSrc = GetComponents<AudioSource>()[1];
+        _softAudioSrc = gameObject.AddComponent<AudioSource>();
+        _hardAudioSrc = gameObject.AddComponent<AudioSource>();
+        _softAudioSrc.loop = true;
+        _hardAudioSrc.loop = true;
         ResourceManager.ExceptionHandler = CustomExceptionHandler;
         if (Random.Range(0, 2) == 0) _key = "Em";
     }

@@ -352,10 +352,6 @@ public class Racer : iRacer, IDisposable
                 CamSelector.Instance.SelectCam("Simple");
                 ChFlag = true;
             }
-            var s = _gps.Speed;
-            if (s > 4) { music.SetMix(s/20); }
-            //else { music.SetMix(0); }
-
         }
     }
 

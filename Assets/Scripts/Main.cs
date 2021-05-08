@@ -131,6 +131,7 @@ public class Main : Singleton<Main>, iMain
         if (OldScene.name == null) return;
         Debug.Log("Main SceneChange from " + OldScene.name + " to " + NewScene.name);
         if (NewScene.name == "SceneSelector") return;
+        if(NewScene.name == "RaceSelector") music.StepDown();
         int Level = NewScene.buildIndex;
         if (Level < 5) return;
         if (OnLevelLoaded != null)

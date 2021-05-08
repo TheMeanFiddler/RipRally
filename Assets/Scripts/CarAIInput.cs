@@ -143,7 +143,7 @@ public class CarAIInput : MonoBehaviour, iInputManager
                     //Are we approaching at an angle or spinning?
                     float FlickSegAdj = Rd.XSecs.Diff(AdjustedTurninXSec, _approachBend.ApexXSec) * (TurnInSpeed - _approachBend.Speed) / _approachBend.Speed; // (HeadingAngle + _rb.angularVelocity.y * 20) * _approachBend.FlickSegsMultiplier * -_approachBend.Sign;
                     //if (_approachBend.Type == BendType.Right) FlickSegAdj = -FlickSegAdj;
-                    Debug.Log("FlickSegs = " + FlickSegs + "   FlickSegAdj=(" + Rd.XSecs.Diff(AdjustedTurninXSec, _approachBend.ApexXSec) + " * " + (TurnInSpeed - _approachBend.Speed) / _approachBend.Speed + " = " + FlickSegAdj + "\nTotal=" + (FlickSegs + FlickSegAdj));
+                    //Debug.Log("FlickSegs = " + FlickSegs + "   FlickSegAdj=(" + Rd.XSecs.Diff(AdjustedTurninXSec, _approachBend.ApexXSec) + " * " + (TurnInSpeed - _approachBend.Speed) / _approachBend.Speed + " = " + FlickSegAdj + "\nTotal=" + (FlickSegs + FlickSegAdj));
                     FlickSegs += FlickSegAdj;
                     //Too slow, the flick will be too harsh
                     //Debug.Log("FlickSegs*=" + TurnInSpeed + "^2/225=" + FlickSegs);

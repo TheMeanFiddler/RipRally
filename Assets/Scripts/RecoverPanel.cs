@@ -28,7 +28,9 @@ public class RecoverPanel : MonoBehaviour
                 SegIdx = System.Convert.ToInt16(hit.collider.name.Substring(7));
             }
         }
-        if (SegIdx != _lastSegIdx) { _gps.RecoveryAllowed = true; Destroy(gameObject); }
+        if (SegIdx != _lastSegIdx) { _gps.RecoveryAllowed = true; Destroy(gameObject);
+            MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Soft, 0, true);
+        }
     }
 
     public void RecoverYes_Click()
@@ -41,6 +43,7 @@ public class RecoverPanel : MonoBehaviour
     {
         Destroy(gameObject);
         DrivingPlayManager.Current.PlayerCarManager.DontRecover();
+        MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Soft, 0, true);
     }
 
     void Destroy()

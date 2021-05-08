@@ -272,6 +272,7 @@ public class VehicleManager : iVehicleManager
            
         goCar.transform.rotation = Quaternion.LookRotation(Road.Instance.XSecs[Gps.CurrSegIdx].Forward);
         Gps.RecoveryAllowed = true;
+        MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Hard, 0.1f);
     }
 
     public void DontRecover()

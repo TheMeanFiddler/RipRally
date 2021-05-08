@@ -19,38 +19,50 @@ When the car stops it plays the Soft
 //https://gamedevbeginner.com/ultimate-guide-to-playscheduled-in-unity/
 public class MusicPlayer : Singleton<MusicPlayer>
 {
-    AudioSource _softAudioSrc;
-    AudioSource _hardAudioSrc;
-    AudioSource _codaAudioSrc;
 
+    AudioSource _codaAudioSrc;
+    AudioSource _crescAudioSrc;
+    AudioSource _softAudioSrc;
     AudioSource[] audioSrcs;
-    int tgl = 0;
-    double _currStart;
-    double _nextStart = 100000;
+    double startTime = 100000;
+    double _clipLen;
+    double hardLen;
+    double softLen;
+    bool Transitioning;
     List<IResourceLocation> SoftCatalog = new List<IResourceLocation>();
     List<IResourceLocation> HardCatalog = new List<IResourceLocation>();
     List<IResourceLocation> CodaCatalog = new List<IResourceLocation>();
     List<AudioClip> CodaClips = new List<AudioClip>();
     string _theme = "Theme1";
-    MusicType currType = MusicType.None;
+    State _state = State.Silent;
+    State _prevState = State.Silent;
 
     private void Awake()
     {
         DontDestroyOnLoad(this);
         _softAudioSrc = gameObject.AddComponent<AudioSource>();
-        _hardAudioSrc = gameObject.AddComponent<AudioSource>();
+        _crescAudioSrc = gameObject.AddComponent<AudioSource>();
         _codaAudioSrc = gameObject.AddComponent<AudioSource>();
         _softAudioSrc.loop = true;
-        _hardAudioSrc.loop = true;
-        if (Settings.Instance.MusicOn == false) { _softAudioSrc.mute = true; _hardAudioSrc.mute = true; }
+        _crescAudioSrc.loop = true;
+        if (Settings.Instance.MusicOn == false) { _softAudioSrc.mute = true; _crescAudioSrc.mute = true; _codaAudioSrc.mute = true; }
         ResourceManager.ExceptionHandler = CustomExceptionHandler;
-        if (Random.Range(0, 2) == 0) _theme = "Theme2";
+        
+    }
+    private void Start()
+    {
+        StartCoroutine(ChooseTheme());
     }
 
-    IEnumerator Start()
+    internal void ApplySettings(bool isOn)
+    {
+        audioSrcs[0].mute = !isOn; audioSrcs[1].mute = !isOn; _codaAudioSrc.mute = !isOn;
+    }
+
+    IEnumerator ChooseTheme()
     {
         AsyncOperationHandle<IList<IResourceLocation>> catHandle;
-        //Returns any IResourceLocations that are mapped to the key "Soft" and "Gm"
+        _theme = "Theme" + (Random.Range(1, 4));
         catHandle = Addressables.LoadResourceLocationsAsync(new string[] { "Soft", _theme }, Addressables.MergeMode.Intersection);
         //catHandle = Addressables.LoadResourceLocationsAsync("Soft, Em");
         yield return catHandle;
@@ -92,6 +104,8 @@ public class MusicPlayer : Singleton<MusicPlayer>
         if(hndl.Status == AsyncOperationStatus.Succeeded)
         {
             _softAudioSrc.clip = hndl.Result;
+            _clipLen = (double)hndl.Result.samples / hndl.Result.frequency;
+
         }
         Addressables.Release(hndl);
         //Load the hard clip
@@ -100,17 +114,20 @@ public class MusicPlayer : Singleton<MusicPlayer>
         yield return hndl2;
         if (hndl2.Status == AsyncOperationStatus.Succeeded)
         {
-            _hardAudioSrc.clip = hndl2.Result;
+            _crescAudioSrc.clip = hndl2.Result;
         }
         Addressables.Release(hndl2);
 
         //Load the coda clip
         rnd = Random.Range(0, CodaClips.Count);
+        if(CodaClips.Count>0)
         _codaAudioSrc.clip = CodaClips[rnd];
-        
+
+        Debug.Log("StartSoft");
         _softAudioSrc.PlayScheduled(AudioSettings.dspTime + 0.1);
-        _hardAudioSrc.PlayScheduled(AudioSettings.dspTime + 0.1);
-        _hardAudioSrc.volume = 0;
+        startTime = AudioSettings.dspTime + 0.1;
+        ScheduleStateChange(State.Soft, AudioSettings.dspTime + 0.1);
+        _state = State.Toggling;
         yield return 0;
     }
 
@@ -119,73 +136,106 @@ public class MusicPlayer : Singleton<MusicPlayer>
         Debug.Log(exception.GetType());
     }
 
-
-    public enum MusicType { Soft, Hard, Coda, None}
-    public enum PlaySched { Now, XFade, NextBar, End}
-    
-
-    public void SetMix(float val)
+    private void Update()
     {
-        val = Mathf.Clamp01(val);
-        _hardAudioSrc.volume = val;
-        _softAudioSrc.volume = 1 - val;
-    }
+        if (_prevState != _state) Debug.Log("Change from " + _prevState.ToString() + " to " + _state);
+        _prevState = _state;
 
-
-
-
-
-    public void FadeOut(float secs)
-    {
-        StartCoroutine (Fade(secs));
-    }
-    IEnumerator Fade(float secs)
-    {
-        float vol = audioSrcs[tgl].volume;
-        float incr = vol / 50;
-        while (vol > 0)
+        if (_state != State.Silent && _state != State.Toggling)
         {
-            vol -= incr;
-            audioSrcs[tgl].volume = vol;
-            yield return new WaitForSeconds(secs/50);
+            if (AudioSettings.dspTime>startTime + 30)
+            {
+                StepDown();
+            }
+            
         }
-        audioSrcs[tgl].Stop();
-        audioSrcs[tgl].volume = 1;
+        if (_state == State.Silent && AudioSettings.dspTime > startTime + 10)
+        {
+            if (Random.value > 0.5) SchedulePlay(State.Hard, 0.1f);
+            else SchedulePlay(State.Soft, 0.1f);
+        }
+    }
+
+    public enum State { Soft, Hard, Toggling, Fading, Silent}
+
+    public void StepDown()
+    {
+        if (_state==State.Hard) SchedulePlay(State.Soft, 0, false);
+        else
+            Fade();
+    }
+
+
+    public void SchedulePlay(State newState, float secs = 0, bool nextBar = false)
+    {
+        if (_state == State.Fading) { StopCoroutine("FadeSoft"); _softAudioSrc.volume = 1; Debug.Log("Stop FadeSoftCoRou"); } ;
+        if (_state == State.Toggling) return;
+        Debug.Log("SchedulePlay " + newState.ToString());
+
+        AudioSource newAudioSrc = _codaAudioSrc;
+        if (newState == State.Soft) newAudioSrc = _softAudioSrc;
+        if (newState == State.Hard) newAudioSrc = _crescAudioSrc;
+        AudioSource currAudioSrc = _codaAudioSrc;
+        if (_state == State.Soft) currAudioSrc = _softAudioSrc;
+        if (_state == State.Hard) currAudioSrc = _crescAudioSrc;
+
+        if (secs == 0)
+        {
+            double RunTime = (double)currAudioSrc.timeSamples / currAudioSrc.clip.frequency;
+            double clipStartTime = AudioSettings.dspTime - RunTime;
+            if (nextBar)
+            {
+                // 72993 samples in a bar
+                // freq = 44100 Hz
+                int lastBarNo = currAudioSrc.timeSamples / 72993;
+                int nextBarSample = (lastBarNo + 1) * 72993;
+                startTime = clipStartTime + (double)nextBarSample / currAudioSrc.clip.frequency;
+            }
+            else
+                startTime = clipStartTime + (double)currAudioSrc.clip.samples / currAudioSrc.clip.frequency;
+        }
+        else
+        {
+            startTime = AudioSettings.dspTime + secs;
+        }
+        _state = State.Toggling;
+        newAudioSrc.PlayScheduled(startTime);
+        currAudioSrc.SetScheduledEndTime(startTime);
+        StartCoroutine(ScheduleStateChange(newState, startTime));
+    }
+
+    IEnumerator ScheduleStateChange(State state, double schedTime)
+    {
+        yield return new WaitUntil(() => AudioSettings.dspTime > schedTime);
+        _state = state;
         yield return 0;
     }
-    
-    public void ScheduleCoda()
+
+    public void Fade()
     {
-        Debug.Log(_hardAudioSrc.clip.samples);
-        double len = (double)_hardAudioSrc.clip.samples / _hardAudioSrc.clip.frequency;
-        int lastBarNo = _hardAudioSrc.timeSamples / 291972;
-        int nextBarSample = (lastBarNo + 1) * 291972;
-        double swapTime = _currStart + (double)nextBarSample / _hardAudioSrc.clip.frequency;
-        // 72993 samples in a bar
-        // freq = 44100 Hz
-        Debug.Log("Sched");
-        StartCoroutine(PlayCoda(swapTime));
-    }
-
-
-
-
-    IEnumerator PlayCoda(double swapTime = 0)
-    {
-        if (swapTime != 0)
+        if (_state != State.Fading)
         {
-            while (AudioSettings.dspTime < swapTime)
-            { yield return new WaitForEndOfFrame(); }
+            Debug.Log("Start Fade");
+            StartCoroutine("FadeSoft");
+            _state = State.Fading;
         }
-        _hardAudioSrc.Stop();
-        _codaAudioSrc.Play();
-
-        yield return 0;
     }
-
-    public void IsOn(bool isOn )
+    IEnumerator FadeSoft()
     {
-        _softAudioSrc.mute = !isOn;
-        _hardAudioSrc.mute = !isOn;
+        float v = 1;
+        while (v > 0f)
+        {
+            v -= 0.001f;
+            _softAudioSrc.volume = v;
+            yield return new WaitForEndOfFrame();
+        }
+        _softAudioSrc.Stop();
+        _state = State.Silent;
+        Debug.Log("EndFade");
+        _softAudioSrc.volume = 1;
+        startTime = AudioSettings.dspTime;
+        yield return null;
+
     }
+
 }

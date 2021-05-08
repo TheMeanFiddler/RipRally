@@ -14,7 +14,6 @@ public class RaceStarter: MonoBehaviour
         //CamSelector.Instance.Init();
         Race.Current.StartEngines();
         LightCount = 0;
-        Debug.Log("RaceStarterInit Sez FPCam = " + CamSelector.Instance.FPCam.name);
     }
 
     void Update()
@@ -22,9 +21,9 @@ public class RaceStarter: MonoBehaviour
         if(CamSelector.Instance.FPCam==null) CamSelector.Instance.Init();
         if (Time.time - Timer > 1)
         {
-            if (LightCount == 0)
+            if (LightCount == 2)
             {
-
+                MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Hard, 1);
             }
             LightCount++;
             Timer = Time.time;

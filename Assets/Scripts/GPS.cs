@@ -130,8 +130,9 @@ public class GPS
         PrevSegIdx = CurrSegIdx;
         if (Time.time - SegTime > 5 && Player == true && RecoveryAllowed)
         {
+            //SHOW THE RECOVERY PANEL
             RecoveryAllowed = false;
-            MusicPlayer.Instance.ScheduleCoda();
+            MusicPlayer.Instance.StepDown();
             Transform canv = GameObject.FindObjectOfType<Canvas>().transform;
             GameObject pnlRecover = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/pnlRecover"), canv);
             //pnlRecover.transform.localScale = Vector3.one;

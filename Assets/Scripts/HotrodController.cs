@@ -342,7 +342,6 @@ public class HotrodController : VehicleController
 
 
         #region Anti-Roll bar Region
-        UnityEngine.Profiling.Profiler.BeginSample("AntRollbar");
         float travelL;
         float travelR;
         float AntiRoll = AntiRollForce * GetComponent<Rigidbody>().velocity.magnitude;
@@ -426,7 +425,6 @@ public class HotrodController : VehicleController
             GetComponent<Rigidbody>().AddForceAtPosition(WCRR.transform.up * -antiRollForce, WCRL.transform.position);
             GetComponent<Rigidbody>().AddForceAtPosition(WCRR.transform.up * antiRollForce, WCRR.transform.position);
         }
-        UnityEngine.Profiling.Profiler.EndSample();
         #endregion
 
         #region Spray and Smoke Particles Region

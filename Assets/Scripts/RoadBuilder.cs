@@ -137,7 +137,6 @@ public class RoadBuilder : MonoBehaviour
                 if (Input.mousePosition.x >= worldCorners[0].x && Input.mousePosition.x < worldCorners[2].x
                                         && Input.mousePosition.y >= worldCorners[0].y && Input.mousePosition.y < worldCorners[2].y)
                 {
-                    Debug.Log(RT.name);
                     _mouseDownOnUI = true;
                     break;
                 }

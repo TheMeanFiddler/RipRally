@@ -168,7 +168,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     public void SchedulePlay(State newState, float secs = 0, bool nextBar = false)
     {
-        if (_state == State.Fading) { StopCoroutine("FadeSoft"); _softAudioSrc.volume = 1; Debug.Log("Stop FadeSoftCoRou"); } ;
+        //if (_state == State.Fading) { StopCoroutine("FadeSoft"); _softAudioSrc.volume = 1; Debug.Log("Stop FadeSoftCoRou"); } ;
         if (_state == State.Toggling) return;
         Debug.Log("SchedulePlay " + newState.ToString());
 
@@ -230,10 +230,13 @@ public class MusicPlayer : Singleton<MusicPlayer>
             yield return new WaitForEndOfFrame();
         }
         _softAudioSrc.Stop();
-        _state = State.Silent;
-        Debug.Log("EndFade");
         _softAudioSrc.volume = 1;
-        startTime = AudioSettings.dspTime;
+        if (_state == State.Fading)
+        {
+            _state = State.Silent;
+            Debug.Log("EndFade");
+            startTime = AudioSettings.dspTime;
+        }
         yield return null;
 
     }

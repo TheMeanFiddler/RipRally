@@ -31,7 +31,6 @@ public class RecoverPanel : MonoBehaviour
         if (SegIdx != _lastSegIdx)
         {
             _gps.RecoveryAllowed = true; Destroy(gameObject);
-            MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Soft, 0, true);
         }
     }
 
@@ -45,7 +44,6 @@ public class RecoverPanel : MonoBehaviour
     {
         Destroy(gameObject);
         DrivingPlayManager.Current.PlayerCarManager.DontRecover();
-        MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Soft, 0, true);
     }
 
     void Destroy()

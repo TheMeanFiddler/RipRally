@@ -28,7 +28,7 @@ public class DrivingMenuController : MonoBehaviour
         goControlCanvas = GameObject.Find("ControlCanvas");
     }
 
-    public void TestButtonClick()
+    public void TestButtonClickNOtused()
     {
         DrivingTests.Instance.MaterialTest();
     }
@@ -45,10 +45,18 @@ public class DrivingMenuController : MonoBehaviour
     public void ShowMenuPanel(bool Show)
     {
         goMenuPanel.SetActive(Show);
+        if (Show)
+            MusicPlayer.Instance.Silence();
+        else
+            if(!_restarting)
+            MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Soft, 0.1f);
+        _restarting = false;
     }
 
+    bool _restarting;
     public void RestartRace()
     {
+        _restarting = true;
         MenuToggle.GetComponent<Toggle>().isOn = false;
         DrivingPlayManager.Current.RespawnCars();
         Race.Current.ReadySteady();

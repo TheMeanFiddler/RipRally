@@ -374,6 +374,8 @@ public class Main : Singleton<Main>, iMain
         }
 
         SceneManager.LoadScene("TrackSelector");
+        music.LoadTheme();
+        music.SchedulePlay(MusicPlayer.State.Soft, 0.1f);
     }
 
     public void PopupMsg(string msg)

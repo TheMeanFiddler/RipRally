@@ -32,6 +32,10 @@ public class MusicPlayer : Singleton<MusicPlayer>
     List<IResourceLocation> SoftCatalog = new List<IResourceLocation>();
     List<IResourceLocation> HardCatalog = new List<IResourceLocation>();
     List<IResourceLocation> CodaCatalog = new List<IResourceLocation>();
+    AudioClip _softAudioClip;
+    AudioClip _CrescAudioClip;
+    AsyncOperationHandle<AudioClip> _softClipHandle;
+    AsyncOperationHandle<AudioClip> _crescClipHandle;
     List<AudioClip> CodaClips = new List<AudioClip>();
     string _theme = "Theme1";
     State _state = State.Silent;
@@ -47,7 +51,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
         _crescAudioSrc.loop = true;
         if (Settings.Instance.MusicOn == false) { _softAudioSrc.mute = true; _crescAudioSrc.mute = true; _codaAudioSrc.mute = true; }
         ResourceManager.ExceptionHandler = CustomExceptionHandler;
-        
+
     }
     private void Start()
     {
@@ -59,10 +63,16 @@ public class MusicPlayer : Singleton<MusicPlayer>
         audioSrcs[0].mute = !isOn; audioSrcs[1].mute = !isOn; _codaAudioSrc.mute = !isOn;
     }
 
+    public void LoadTheme()
+    {
+        Addressables.Release(_softClipHandle);
+        Addressables.Release(_crescClipHandle);
+        StartCoroutine(ChooseTheme());
+    }
     IEnumerator ChooseTheme()
     {
         AsyncOperationHandle<IList<IResourceLocation>> catHandle;
-        _theme = "Theme" + (Random.Range(1, 4));
+        _theme = "Theme" + (Random.Range(1, 5));
         catHandle = Addressables.LoadResourceLocationsAsync(new string[] { "Soft", _theme }, Addressables.MergeMode.Intersection);
         //catHandle = Addressables.LoadResourceLocationsAsync("Soft, Em");
         yield return catHandle;
@@ -99,35 +109,30 @@ public class MusicPlayer : Singleton<MusicPlayer>
         Addressables.Release(catHandle);
         //Load the soft clip
         int rnd = Random.Range(0, SoftCatalog.Count);
-        AsyncOperationHandle<AudioClip> hndl = Addressables.LoadAssetAsync<AudioClip>(SoftCatalog[rnd]);
-        yield return hndl;
-        if(hndl.Status == AsyncOperationStatus.Succeeded)
+        _softClipHandle = Addressables.LoadAssetAsync<AudioClip>(SoftCatalog[rnd]);
+        yield return _softClipHandle;
+        if (_softClipHandle.Status == AsyncOperationStatus.Succeeded)
         {
-            _softAudioSrc.clip = hndl.Result;
-            _clipLen = (double)hndl.Result.samples / hndl.Result.frequency;
-
+            _softAudioSrc.clip = _softClipHandle.Result;
         }
-        Addressables.Release(hndl);
         //Load the hard clip
         rnd = Random.Range(0, HardCatalog.Count);
-        AsyncOperationHandle<AudioClip>  hndl2 = Addressables.LoadAssetAsync<AudioClip>(HardCatalog[rnd]);
-        yield return hndl2;
-        if (hndl2.Status == AsyncOperationStatus.Succeeded)
+        _crescClipHandle = Addressables.LoadAssetAsync<AudioClip>(HardCatalog[rnd]);
+        yield return _crescClipHandle;
+        if (_crescClipHandle.Status == AsyncOperationStatus.Succeeded)
         {
-            _crescAudioSrc.clip = hndl2.Result;
+            _crescAudioSrc.clip = _crescClipHandle.Result;
         }
-        Addressables.Release(hndl2);
 
         //Load the coda clip
-        rnd = Random.Range(0, CodaClips.Count);
-        if(CodaClips.Count>0)
-        _codaAudioSrc.clip = CodaClips[rnd];
+        //rnd = Random.Range(0, CodaClips.Count);
+        //if (CodaClips.Count > 0)
+        //    _codaAudioSrc.clip = CodaClips[rnd];
 
-        Debug.Log("StartSoft");
         _softAudioSrc.PlayScheduled(AudioSettings.dspTime + 0.1);
         startTime = AudioSettings.dspTime + 0.1;
-        ScheduleStateChange(State.Soft, AudioSettings.dspTime + 0.1);
         _state = State.Toggling;
+        StartCoroutine(ScheduleStateChange(State.Soft, AudioSettings.dspTime + 0.1));
         yield return 0;
     }
 
@@ -143,11 +148,11 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
         if (_state != State.Silent && _state != State.Toggling)
         {
-            if (AudioSettings.dspTime>startTime + 30)
+            if (AudioSettings.dspTime > startTime + 30)
             {
                 StepDown();
             }
-            
+
         }
         if (_state == State.Silent && AudioSettings.dspTime > startTime + 10)
         {
@@ -156,11 +161,11 @@ public class MusicPlayer : Singleton<MusicPlayer>
         }
     }
 
-    public enum State { Soft, Hard, Toggling, Fading, Silent}
+    public enum State { Soft, Hard, Toggling, Fading, Silent }
 
     public void StepDown()
     {
-        if (_state==State.Hard) SchedulePlay(State.Soft, 0, false);
+        if (_state == State.Hard) SchedulePlay(State.Soft, 0, false);
         else
             Fade();
     }
@@ -239,6 +244,14 @@ public class MusicPlayer : Singleton<MusicPlayer>
         }
         yield return null;
 
+    }
+
+    public void Silence()
+    {
+        _softAudioSrc.Stop();
+        _crescAudioSrc.Stop();
+        StopAllCoroutines();
+        _state = State.Silent;
     }
 
 }

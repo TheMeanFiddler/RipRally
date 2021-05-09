@@ -657,11 +657,14 @@ public class PorscheController : VehicleController
                 }
             }
             catch { }
+            /*
+            This was the thing that righted it if it landed on its back
             float bcx = cp.thisCollider.bounds.center.x;
             if (Mathf.Abs(bcx) > 5 && Vector3.Angle(transform.up, Vector3.up) > 90 && _rb.angularVelocity.sqrMagnitude < 3)
             {
                 _rb.AddRelativeTorque(Vector3.forward * 10 * bcx, ForceMode.Force);
             }
+            */
         }
 
     }

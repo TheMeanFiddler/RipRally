@@ -23,7 +23,7 @@ public class RaceStarter: MonoBehaviour
         {
             if (LightCount == 2)
             {
-                MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Hard, 1);
+                MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Hard, 1f);
             }
             LightCount++;
             Timer = Time.time;

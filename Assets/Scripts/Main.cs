@@ -62,7 +62,6 @@ public class Main : Singleton<Main>, iMain
     public bool GameSceneLoaded { get; set; }
     bool LoadMenuSceneRunning;
     GameObject goTipCanvas;
-    MusicPlayer music;
 
     void Awake()
     {
@@ -131,8 +130,7 @@ public class Main : Singleton<Main>, iMain
         if (OldScene.name == null) return;
         Debug.Log("Main SceneChange from " + OldScene.name + " to " + NewScene.name);
         if (NewScene.name == "SceneSelector") return;
-        if(NewScene.name == "VehicleSelector") music = MusicPlayer.Instance;
-        if (NewScene.name == "RaceSelector") music.StepDown();
+        if (NewScene.name == "RaceSelector") MusicPlayer.Instance.StepDown();
         int Level = NewScene.buildIndex;
         if (Level < 5) return;
         if (OnLevelLoaded != null)
@@ -375,8 +373,8 @@ public class Main : Singleton<Main>, iMain
         }
 
         SceneManager.LoadScene("TrackSelector");
-        music.LoadTheme();
-        music.SchedulePlay(MusicPlayer.State.Soft, 0.1f);
+        MusicPlayer.Instance.LoadTheme();
+        MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Soft, 0.1f);
     }
 
     public void PopupMsg(string msg)

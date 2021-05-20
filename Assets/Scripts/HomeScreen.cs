@@ -80,6 +80,14 @@ public class HomeScreen : MonoBehaviour, iGameStarter {
         }
     }
 
+    public void NavigateBack()
+    {
+        if (SceneManager.GetActiveScene().name == "TrackSelector") Application.Quit();
+        if (SceneManager.GetActiveScene().name == "VehicleSelector") SceneManager.LoadScene("TrackSelector");
+        if (SceneManager.GetActiveScene().name == "SceneSelector") SceneManager.LoadScene("TrackSelector");
+        if (SceneManager.GetActiveScene().name == "RaceSelector") SceneManager.LoadScene("VehicleSelector");
+    }
+
     void Destroy()
     {
     }

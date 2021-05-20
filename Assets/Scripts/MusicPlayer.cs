@@ -49,7 +49,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
         _codaAudioSrc = gameObject.AddComponent<AudioSource>();
         _softAudioSrc.loop = true;
         _crescAudioSrc.loop = true;
-        if (Settings.Instance.MusicOn == false) { _softAudioSrc.mute = true; _crescAudioSrc.mute = true; _codaAudioSrc.mute = true; }
+        ApplySettings();
         ResourceManager.ExceptionHandler = CustomExceptionHandler;
 
     }
@@ -58,9 +58,10 @@ public class MusicPlayer : Singleton<MusicPlayer>
         StartCoroutine(ChooseTheme());
     }
 
-    internal void ApplySettings(bool isOn)
+    internal void ApplySettings()
     {
-        audioSrcs[0].mute = !isOn; audioSrcs[1].mute = !isOn; _codaAudioSrc.mute = !isOn;
+        bool mute = !Settings.Instance.MusicOn;
+        _softAudioSrc.mute = mute; _crescAudioSrc.mute = mute; _codaAudioSrc.mute = mute;
     }
 
     public void LoadTheme()
@@ -143,7 +144,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     private void Update()
     {
-        if (_prevState != _state) Debug.Log("Change from " + _prevState.ToString() + " to " + _state);
+        //if (_prevState != _state) Debug.Log("Change from " + _prevState.ToString() + " to " + _state);
         _prevState = _state;
 
         if (_state != State.Silent && _state != State.Toggling)
@@ -211,7 +212,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     IEnumerator ScheduleStateChange(State state, double schedTime)
     {
-        yield return new WaitUntil(() => AudioSettings.dspTime > schedTime);
+         yield return new WaitUntil(() => AudioSettings.dspTime > schedTime);
         _state = state;
         yield return 0;
     }

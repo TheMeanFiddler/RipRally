@@ -162,7 +162,7 @@ public class SettingsView:MonoBehaviour
     public void tglMusicOn(bool isOn)
     {
         Settings.Instance.MusicOn = isOn;
-        MusicPlayer.Instance.ApplySettings();
+        MusicPlayer.Instance.ApplySettings(isOn);
     }
 }
 

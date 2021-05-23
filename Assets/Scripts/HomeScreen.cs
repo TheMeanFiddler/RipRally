@@ -80,14 +80,24 @@ public class HomeScreen : MonoBehaviour, iGameStarter {
         }
     }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
     public void NavigateBack()
     {
         if (SceneManager.GetActiveScene().name == "TrackSelector") Application.Quit();
         if (SceneManager.GetActiveScene().name == "VehicleSelector") SceneManager.LoadScene("TrackSelector");
         if (SceneManager.GetActiveScene().name == "SceneSelector") SceneManager.LoadScene("TrackSelector");
-        if (SceneManager.GetActiveScene().name == "RaceSelector") SceneManager.LoadScene("VehicleSelector");
+        if (SceneManager.GetActiveScene().name == "RaceSelector")
+        {
+            SceneManager.UnloadSceneAsync(Main.Instance.SelectedScene);
+            Main.Instance.StartLoadingMenuScene("VehicleSelector");
+        }
     }
 
+=======
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
+=======
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
     void Destroy()
     {
     }

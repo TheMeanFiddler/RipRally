@@ -62,11 +62,20 @@ public class Main : Singleton<Main>, iMain
     public bool GameSceneLoaded { get; set; }
     bool LoadMenuSceneRunning;
     GameObject goTipCanvas;
+<<<<<<< HEAD
+<<<<<<< HEAD
+    MusicPlayer _musicPlayer;
+=======
+=======
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
+    MusicPlayer music;
 
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
     void Awake()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         DontDestroyOnLoad(this);
+        _musicPlayer = MusicPlayer.Instance;
         Settings.Instance.LoadFromFile();
         UserDataManager.Instance.LoadFromFile();
         SceneManager.activeSceneChanged += SceneChange;
@@ -130,7 +139,17 @@ public class Main : Singleton<Main>, iMain
         if (OldScene.name == null) return;
         Debug.Log("Main SceneChange from " + OldScene.name + " to " + NewScene.name);
         if (NewScene.name == "SceneSelector") return;
-        if (NewScene.name == "RaceSelector") MusicPlayer.Instance.StepDown();
+<<<<<<< HEAD
+<<<<<<< HEAD
+        if (NewScene.name == "RaceSelector") _musicPlayer.Fade();
+=======
+        if(NewScene.name == "VehicleSelector") music = MusicPlayer.Instance;
+        if (NewScene.name == "RaceSelector") music.StepDown();
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
+=======
+        if(NewScene.name == "VehicleSelector") music = MusicPlayer.Instance;
+        if (NewScene.name == "RaceSelector") music.StepDown();
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
         int Level = NewScene.buildIndex;
         if (Level < 5) return;
         if (OnLevelLoaded != null)
@@ -373,8 +392,8 @@ public class Main : Singleton<Main>, iMain
         }
 
         SceneManager.LoadScene("TrackSelector");
-        MusicPlayer.Instance.LoadTheme();
-        MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Soft, 0.1f);
+        music.LoadTheme();
+        music.SchedulePlay(MusicPlayer.State.Soft, 0.1f);
     }
 
     public void PopupMsg(string msg)

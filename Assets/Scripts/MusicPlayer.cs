@@ -8,11 +8,9 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
 
 /*How it works
-Runs a random Soft clip on repeat until the RaceSelector loads
-Then it fades out
-It loads the Hard music into the second AudioSource
-When the player car accelerates it plays the hard music
-When the car stops it plays the Soft
+ It chooses a random theme.
+Each theme has a Soft clip and a Cresc clip
+It continually cycles between hard soft and silent
 
 
 */
@@ -43,13 +41,12 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     private void Awake()
     {
-        DontDestroyOnLoad(this);
         _softAudioSrc = gameObject.AddComponent<AudioSource>();
         _crescAudioSrc = gameObject.AddComponent<AudioSource>();
         _codaAudioSrc = gameObject.AddComponent<AudioSource>();
         _softAudioSrc.loop = true;
         _crescAudioSrc.loop = true;
-        ApplySettings();
+        if (Settings.Instance.MusicOn == false) { _softAudioSrc.mute = true; _crescAudioSrc.mute = true; _codaAudioSrc.mute = true; }
         ResourceManager.ExceptionHandler = CustomExceptionHandler;
 
     }
@@ -58,10 +55,9 @@ public class MusicPlayer : Singleton<MusicPlayer>
         StartCoroutine(ChooseTheme());
     }
 
-    internal void ApplySettings()
+    internal void ApplySettings(bool isOn)
     {
-        bool mute = !Settings.Instance.MusicOn;
-        _softAudioSrc.mute = mute; _crescAudioSrc.mute = mute; _codaAudioSrc.mute = mute;
+        audioSrcs[0].mute = !isOn; audioSrcs[1].mute = !isOn; _codaAudioSrc.mute = !isOn;
     }
 
     public void LoadTheme()
@@ -72,8 +68,12 @@ public class MusicPlayer : Singleton<MusicPlayer>
     }
     IEnumerator ChooseTheme()
     {
+        SoftCatalog.Clear();
+        HardCatalog.Clear();
+        CodaClips.Clear();
         AsyncOperationHandle<IList<IResourceLocation>> catHandle;
-        _theme = "Theme" + (Random.Range(1, 5));
+        //there are 6 themes
+        _theme = "Theme" + (Random.Range(1, 7));
         catHandle = Addressables.LoadResourceLocationsAsync(new string[] { "Soft", _theme }, Addressables.MergeMode.Intersection);
         //catHandle = Addressables.LoadResourceLocationsAsync("Soft, Em");
         yield return catHandle;
@@ -132,7 +132,6 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
         _softAudioSrc.PlayScheduled(AudioSettings.dspTime + 0.1);
         startTime = AudioSettings.dspTime + 0.1;
-        _state = State.Toggling;
         StartCoroutine(ScheduleStateChange(State.Soft, AudioSettings.dspTime + 0.1));
         yield return 0;
     }
@@ -144,27 +143,58 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     private void Update()
     {
-        //if (_prevState != _state) Debug.Log("Change from " + _prevState.ToString() + " to " + _state);
+<<<<<<< HEAD
+<<<<<<< HEAD
+        //Here we are continually changing the level of the music while driving
+=======
+=======
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
+        if (_prevState != _state) Debug.Log("Change from " + _prevState.ToString() + " to " + _state);
         _prevState = _state;
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
 
-        if (_state != State.Silent && _state != State.Toggling)
+        //Only do this while driving
+        if (DrivingPlayManager.Current == null) return;
+        //Only do this if there are no state changes scheduled
+        if (_state == State.Toggling) return;
+        if (_state == State.Hard && _prevState == State.Soft)
         {
             if (AudioSettings.dspTime > startTime + 30)
             {
-                StepDown();
+                SchedulePlay(State.Soft, 0, false);
             }
-
         }
+        if (_state == State.Soft && _prevState==State.Hard)
+        {
+            if (AudioSettings.dspTime > startTime + 30)
+            {
+                Fade();
+            }
+        }
+        if (_state == State.Soft && _prevState == State.Silent)
+        {
+            if (AudioSettings.dspTime > startTime + 30)
+            {
+                SchedulePlay(State.Hard, 0, false);
+            }
+        }
+
         if (_state == State.Silent && AudioSettings.dspTime > startTime + 10)
         {
-            if (Random.value > 0.5) SchedulePlay(State.Hard, 0.1f);
-            else SchedulePlay(State.Soft, 0.1f);
+            SchedulePlay(State.Soft, 0.1f);
         }
     }
 
     public enum State { Soft, Hard, Toggling, Fading, Silent }
 
     public void StepDown()
+    {
+        if (_state == State.Hard) SchedulePlay(State.Soft, 0, true);
+        else
+            Fade();
+    }
+
+    public void StepUp()
     {
         if (_state == State.Hard) SchedulePlay(State.Soft, 0, false);
         else
@@ -204,7 +234,6 @@ public class MusicPlayer : Singleton<MusicPlayer>
         {
             startTime = AudioSettings.dspTime + secs;
         }
-        _state = State.Toggling;
         newAudioSrc.PlayScheduled(startTime);
         currAudioSrc.SetScheduledEndTime(startTime);
         StartCoroutine(ScheduleStateChange(newState, startTime));
@@ -212,7 +241,15 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     IEnumerator ScheduleStateChange(State state, double schedTime)
     {
-         yield return new WaitUntil(() => AudioSettings.dspTime > schedTime);
+<<<<<<< HEAD
+<<<<<<< HEAD
+        _prevState = _state;
+        _state = State.Toggling;
+=======
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
+=======
+>>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
+        yield return new WaitUntil(() => AudioSettings.dspTime > schedTime);
         _state = state;
         yield return 0;
     }
@@ -231,7 +268,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
         float v = 1;
         while (v > 0f)
         {
-            v -= 0.001f;
+            v -= 0.003f;
             _softAudioSrc.volume = v;
             yield return new WaitForEndOfFrame();
         }

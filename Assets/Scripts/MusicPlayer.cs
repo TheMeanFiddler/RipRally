@@ -143,15 +143,8 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     private void Update()
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         //Here we are continually changing the level of the music while driving
-=======
-=======
->>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
-        if (_prevState != _state) Debug.Log("Change from " + _prevState.ToString() + " to " + _state);
-        _prevState = _state;
->>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
 
         //Only do this while driving
         if (DrivingPlayManager.Current == null) return;
@@ -241,14 +234,8 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     IEnumerator ScheduleStateChange(State state, double schedTime)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
         _prevState = _state;
         _state = State.Toggling;
-=======
->>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
-=======
->>>>>>> parent of 2cdb334 (Put in a Gold Back button and Settings Button on VehSel and RaceSel)
         yield return new WaitUntil(() => AudioSettings.dspTime > schedTime);
         _state = state;
         yield return 0;

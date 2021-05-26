@@ -3,12 +3,14 @@
 using GoogleMobileAds.Api;
 //using GoogleMobileAds.Common;
 using System;
+using System.Collections;
 
 class Adverts : MonoBehaviour
 {
 
     public int CoinsReward { get; set; }
-    public bool Recover { get; set; }
+    private bool? CoinsEarned = null;
+    private bool? RecoveryEarned = null;
     string recoverAdUnit_ID;
 
     private RewardedAd rewardedAd;
@@ -34,18 +36,19 @@ class Adverts : MonoBehaviour
 
     private void AdInitialize(InitializationStatus initStatus)
     {
-        Console.WriteLine(initStatus.ToString());
     }
 
     public void PlayVideo100Coins()
     {
         Init();
         CoinsReward = 100;
+        CoinsEarned = null;
         this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
         this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
         this.rewardedAd.OnAdFailedToLoad += RewardedAd_OnAdFailedToLoad;
         this.rewardedAd.OnAdFailedToShow += RewardedAd_OnAdFailedToShow;
-        this.rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
+        this.rewardedAd.OnUserEarnedReward += HandleUserEarnedCoins;
+        StartCoroutine(WaitForCoins());
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
         // Load the rewarded ad with the request.
@@ -54,45 +57,39 @@ class Adverts : MonoBehaviour
 
     public void PlayVideoDoubleCoins(int coinsWon)
     {
-
-
+        Init();
         CoinsReward = coinsWon;
-
-
+        CoinsEarned = null;
     }
 
     public void PlayVideoRecover()
     {
         Init();
-        try
-        {
-            CoinsReward = 0;
-            Recover = true;
-            this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
-            this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
-            this.rewardedAd.OnAdFailedToLoad += RewardedAd_OnAdFailedToLoad;
-            this.rewardedAd.OnAdFailedToShow += RewardedAd_OnAdFailedToShow;
-            this.rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
-            // Create an empty ad request.
-            AdRequest request = new AdRequest.Builder().Build();
-            // Load the rewarded ad with the request.
-            this.rewardedAd.LoadAd(request);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-        
+        CoinsReward = 0;
+        RecoveryEarned = null;
+        this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
+        this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
+        this.rewardedAd.OnAdFailedToLoad += RewardedAd_OnAdFailedToLoad;
+        this.rewardedAd.OnAdFailedToShow += RewardedAd_OnAdFailedToShow;
+        this.rewardedAd.OnUserEarnedReward += HandleUserEarnedRecovery;
+        StartCoroutine(WaitForRecovery());
+        // Create an empty ad request.
+        AdRequest request = new AdRequest.Builder().Build();
+        // Load the rewarded ad with the request.
+        this.rewardedAd.LoadAd(request);
+
     }
     
     private void RewardedAd_OnAdFailedToShow(object sender, AdErrorEventArgs e)
     {
-        Debug.Log("Ad Failed to Showwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+        CoinsEarned = false;
+        RecoveryEarned = false;
     }
 
     private void RewardedAd_OnAdFailedToLoad(object sender, AdFailedToLoadEventArgs e)
     {
-        Debug.Log("Faild Load " + e.LoadAdError.GetMessage());
+        CoinsEarned = false;
+        RecoveryEarned = false;
     }
 
     private void HandleRewardedAdLoaded(object sender, EventArgs args)
@@ -100,69 +97,48 @@ class Adverts : MonoBehaviour
         this.rewardedAd.Show();
     }
 
-    private void HandleUserEarnedReward(object sender, Reward args)
+    private void HandleUserEarnedCoins(object sender, Reward args)
     {
-        string type = args.Type;
-        Debug.Log(type);
-                if (CoinsReward == 0)
-                {
-                    DrivingPlayManager.Current.PlayerCarManager.Recover();
-                    Recover = false;
-                }
-                else
-                {
-                    UserDataManager.Instance.Data.Coins += CoinsReward;
-                    UserDataManager.Instance.SaveToFile();
-                }
+        CoinsEarned = true;
+    }
+
+    private void HandleUserEarnedRecovery(object sender, Reward args)
+    { 
+        RecoveryEarned = true;
     }
     
 
-    /*
-    public void OnUnityAdsDidFinish(string surfacingId, ShowResult result)
+    IEnumerator WaitForRecovery()
     {
-        Debug.Log("Ad finished");
-        switch (result)
-        {
-            case ShowResult.Finished:
-                Debug.Log("The ad was successfully shown." + "CoinsReward" + CoinsReward);
-                if (CoinsReward > 0)
-                {
-                    ScorePanel sp = GetComponent<ScorePanel>();
-                    if (sp != null) sp.ShowDoubleCoins();
-                    GameObject goShop = GameObject.Find("pnlShop(Clone)");
-                    if (goShop != null) {
-                        goShop.GetComponent<ShopPanel>().AddCoins(CoinsReward);
-                    }
-                    UserDataManager.Instance.Data.Coins += CoinsReward;
-                    UserDataManager.Instance.SaveToFile();
-                }
-                if (Recover)
-                {
-                    Main.Instance.PopupMsg("Ad Watched");
-                    DrivingPlayManager.Current.PlayerCarManager.Recover();
-                    Recover = false;
-                }
-                break;
-            case ShowResult.Skipped:
-                if (Recover)
-                {
-                    Main.Instance.PopupMsg("Ad Skipped");
-                    DrivingPlayManager.Current.PlayerCarManager.DontRecover();
-                    Recover = false;
-                }
-                break;
-            case ShowResult.Failed:
-                if (Recover)
-                {
-                    Main.Instance.PopupMsg("Ad Failed");
-                    DrivingPlayManager.Current.PlayerCarManager.DontRecover();
-                    Recover = false;
-                }
-                break;
-        }
-        Recover = false;
+        yield return new WaitUntil(()=>RecoveryEarned!= null);
+        if (RecoveryEarned == true)
+            DrivingPlayManager.Current.PlayerCarManager.Recover();
+        else
+            Debug.Log("No recovery");
+            ClosePanel();
+        yield return 0;
     }
-    */
+
+    IEnumerator WaitForCoins()
+    {
+        yield return new WaitUntil(() => CoinsEarned != null);
+        if (CoinsEarned == true)
+        {
+            ScorePanel sp = GetComponent<ScorePanel>();
+            if (sp != null) sp.ShowDoubleCoins();
+            GameObject goShop = GameObject.Find("pnlShop(Clone)");
+            if (goShop != null)
+            {
+                goShop.GetComponent<ShopPanel>().AddCoins(CoinsReward);
+            }
+            UserDataManager.Instance.Data.Coins += CoinsReward;
+            UserDataManager.Instance.SaveToFile();
+        }
+        yield return 0;
+    }
+
+
+
     public void ClosePanel()
     {
         Destroy(this.gameObject);
@@ -174,7 +150,7 @@ class Adverts : MonoBehaviour
             this.rewardedAd.OnAdLoaded -= HandleRewardedAdLoaded;
             this.rewardedAd.OnAdFailedToLoad -= RewardedAd_OnAdFailedToLoad;
             this.rewardedAd.OnAdFailedToShow -= RewardedAd_OnAdFailedToShow;
-            this.rewardedAd.OnUserEarnedReward -= HandleUserEarnedReward;
+            this.rewardedAd.OnUserEarnedReward -= HandleUserEarnedRecovery;
         }
         
         

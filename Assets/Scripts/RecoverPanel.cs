@@ -36,7 +36,6 @@ public class RecoverPanel : MonoBehaviour
 
     public void RecoverYes_Click()
     {
-        Destroy(gameObject);
         MusicPlayer.Instance.StepDown();
         GetComponent<Adverts>().PlayVideoRecover();
     }

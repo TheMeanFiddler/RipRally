@@ -73,6 +73,7 @@ public class UserDataManager
     private static UserDataManager _instance;
     static readonly object padlock = new object();
     private static string ConfigDatPath;
+    private static string DeviceMacId;
     public UserData Data { get; set; }
 
     public static UserDataManager Instance
@@ -86,6 +87,7 @@ public class UserDataManager
                     _instance = new UserDataManager();
                     _instance.Data = new UserData();
                     ConfigDatPath = Application.persistentDataPath + "/Config.dat";
+                    DeviceMacId = SystemInfo.deviceUniqueIdentifier;
                 }
                 return _instance;
             }
@@ -97,7 +99,7 @@ public class UserDataManager
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file;
         file = File.Create(ConfigDatPath); //you can call it anything you want
-        bf.Serialize(file, Data.Encode());
+        bf.Serialize(file, Data.Encode(DeviceMacId));
         file.Close();
     }
 
@@ -150,7 +152,8 @@ public class UserData
     public List<int> Purchases { get; set; }
     //constructor
 
-    public UserData() { }
+    public UserData() {
+    }
 
     public UserData(UserDataSerial usd)
     {
@@ -158,10 +161,10 @@ public class UserData
         Coins = usd.Coins;
         Purchases = usd.Purchases.ToList();
     }
-    public UserDataSerial Encode()
+    public UserDataSerial Encode(string deviceMacId)
     {
         UserDataSerial usd = new UserDataSerial();
-        usd.MacId = SystemInfo.deviceUniqueIdentifier;
+        usd.MacId = deviceMacId;
         usd.Coins = Coins;
         usd.Purchases = Purchases.ToArray<int>();
         return usd;

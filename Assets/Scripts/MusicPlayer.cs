@@ -200,7 +200,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
         //if (_state == State.Fading) { StopCoroutine("FadeSoft"); _softAudioSrc.volume = 1; Debug.Log("Stop FadeSoftCoRou"); } ;
         if (_state == State.Toggling) return;
         Debug.Log("SchedulePlay " + newState.ToString());
-
+        _softAudioSrc.volume = 1;
         AudioSource newAudioSrc = _codaAudioSrc;
         if (newState == State.Soft) newAudioSrc = _softAudioSrc;
         if (newState == State.Hard) newAudioSrc = _crescAudioSrc;
@@ -255,9 +255,9 @@ public class MusicPlayer : Singleton<MusicPlayer>
         float v = 1;
         while (v > 0f)
         {
-            v -= 0.003f;
+            v -= 0.01f;
             _softAudioSrc.volume = v;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(0.01f);
         }
         _softAudioSrc.Stop();
         _softAudioSrc.volume = 1;

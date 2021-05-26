@@ -52,6 +52,7 @@ public class VehicleManager : iVehicleManager
     Quaternion _pausedRot;
     Vector3 _pausedVel;
     Vector3 _pausedAngVel;
+    Transform trCar;
 
     //Constructor
     public VehicleManager(byte vId, CarManagerType Type, string vehicle, string color)  //can be "Player" or "AI" or "ClientSideClient" or "ServerSideClient" or "Slave"
@@ -71,6 +72,7 @@ public class VehicleManager : iVehicleManager
         {
             UnityEngine.Object Plyr = Resources.Load("Prefabs/" + Vehicle + "Player");
             goCar = (GameObject)GameObject.Instantiate(Plyr, new Vector3(0, 12.0f, 0), Quaternion.identity);
+            trCar = goCar.transform; //Yeah we need this cos the Admob Recovery callback isnt on the main thread
             goCar.tag = "Player";
             goCar.name = name;
 
@@ -267,10 +269,10 @@ public class VehicleManager : iVehicleManager
             RecoverySegIdx -= 40;
             if (RecoverySegIdx < 0) RecoverySegIdx = Road.Instance.Segments.Count + RecoverySegIdx;
         }
-        goCar.transform.position = Road.Instance.XSecs[RecoverySegIdx].MidPt + Vector3.up;
+        trCar.position = Road.Instance.XSecs[RecoverySegIdx].MidPt + Vector3.up;
 
            
-        goCar.transform.rotation = Quaternion.LookRotation(Road.Instance.XSecs[Gps.CurrSegIdx].Forward);
+        trCar.rotation = Quaternion.LookRotation(Road.Instance.XSecs[Gps.CurrSegIdx].Forward);
         Gps.RecoveryAllowed = true;
         MusicPlayer.Instance.SchedulePlay(MusicPlayer.State.Hard, 0.1f);
     }

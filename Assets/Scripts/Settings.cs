@@ -72,6 +72,7 @@ public class UserDataManager
 {
     private static UserDataManager _instance;
     static readonly object padlock = new object();
+    private static string ConfigDatPath;
     public UserData Data { get; set; }
 
     public static UserDataManager Instance
@@ -84,6 +85,7 @@ public class UserDataManager
                 {
                     _instance = new UserDataManager();
                     _instance.Data = new UserData();
+                    ConfigDatPath = Application.persistentDataPath + "/Config.dat";
                 }
                 return _instance;
             }
@@ -94,7 +96,7 @@ public class UserDataManager
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file;
-        file = File.Create(Application.persistentDataPath + "/Config.dat"); //you can call it anything you want
+        file = File.Create(ConfigDatPath); //you can call it anything you want
         bf.Serialize(file, Data.Encode());
         file.Close();
     }
@@ -102,9 +104,9 @@ public class UserDataManager
     public void LoadFromFile()
     {
         BinaryFormatter bf = new BinaryFormatter();
-        if (File.Exists(Application.persistentDataPath + "/Config.dat"))
+        if (File.Exists(ConfigDatPath))
         {
-            FileStream file = File.Open(Application.persistentDataPath + "/Config.dat", FileMode.Open);
+            FileStream file = File.Open(ConfigDatPath, FileMode.Open);
             UserDataSerial usd = (UserDataSerial)bf.Deserialize(file);
             file.Close();
             Data = new UserData(usd);

@@ -2,25 +2,55 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Splash: MonoBehaviour
+public class Splash : MonoBehaviour
 {
     AsyncOperation mao;
+    bool _musicDone;
+    bool _gDPRDone;
     void Start()
     {
-        SceneManager.LoadScene("TrackSelector");
+        MusicPlayer mp = MusicPlayer.Instance;
+        mp.OnLoadResult += Mp_OnLoadResult;
+
+        StartCoroutine(LoadMenu());
     }
 
-    IEnumerator LoadMenuScene(string SceneName)
+    private void Mp_OnLoadResult(bool Success)
     {
-        mao = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Additive);
-        mao.allowSceneActivation = false;
-        while (!mao.isDone)
+        _musicDone = true;
+
+    }
+
+    IEnumerator LoadMenu()
+    {
+        PlayerPrefs.DeleteAll();
+        if (PlayerPrefs.HasKey("npa"))
+            _gDPRDone = true;
+        else
         {
-            if (mao.progress == 0.9f)
-                mao.allowSceneActivation = true;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(1);
+            transform.Find("pnlConsent").gameObject.SetActive(true);
         }
-        SceneManager.UnloadScene("Splash");
+        yield return new WaitUntil(() => _musicDone && _gDPRDone);
+        SceneManager.LoadScene("TrackSelector");
+        yield return null;
+    }
+
+    public void GDPRDecision(bool Agree)
+    {
+        _gDPRDone = true;
+        
+         if (Agree)
+            PlayerPrefs.SetInt("npa", 0);
+        else
+            PlayerPrefs.SetInt("npa", 1);
+        PlayerPrefs.Save();
+        
+    }
+
+    public void ClickPrivacyPolicy()
+    {
+        Application.OpenURL("www.google.com");
     }
 }
 

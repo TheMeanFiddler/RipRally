@@ -12,10 +12,12 @@ class Adverts : MonoBehaviour
     private bool? CoinsEarned = null;
     private bool? RecoveryEarned = null;
     string recoverAdUnit_ID;
+    int npaValue = -1;
 
     private RewardedAd rewardedAd;
     void Init()
     {
+        npaValue = PlayerPrefs.GetInt("npa", 0);    //non personalised ads
         // Initialize the Google Mobile Ads SDK.
         MobileAds.Initialize(initStatus => { AdInitialize(initStatus); });
         recoverAdUnit_ID = "ca-app-pub-3940256099942544/5224354917";
@@ -50,7 +52,7 @@ class Adverts : MonoBehaviour
         this.rewardedAd.OnUserEarnedReward += HandleUserEarnedCoins;
         StartCoroutine(WaitForCoins());
         // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().Build();
+        AdRequest request = new AdRequest.Builder().AddExtra("npa",npaValue.ToString()).Build();
         // Load the rewarded ad with the request.
         this.rewardedAd.LoadAd(request);
     }

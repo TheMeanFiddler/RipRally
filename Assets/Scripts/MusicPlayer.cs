@@ -15,9 +15,12 @@ It continually cycles between hard soft and silent
 
 */
 //https://gamedevbeginner.com/ultimate-guide-to-playscheduled-in-unity/
+
+public delegate void MusicLoadResultHandler(bool Success);
+
 public class MusicPlayer : Singleton<MusicPlayer>
 {
-
+    public event MusicLoadResultHandler OnLoadResult;
     AudioSource _codaAudioSrc;
     AudioSource _crescAudioSrc;
     AudioSource _softAudioSrc;
@@ -77,13 +80,20 @@ public class MusicPlayer : Singleton<MusicPlayer>
         catHandle = Addressables.LoadResourceLocationsAsync(new string[] { "Soft", _theme }, Addressables.MergeMode.Intersection);
         //catHandle = Addressables.LoadResourceLocationsAsync("Soft, Em");
         yield return catHandle;
-
-        foreach (var k in catHandle.Result)
+        if (catHandle.Status == AsyncOperationStatus.Succeeded)
         {
-            SoftCatalog.Add(k);
+            foreach (var k in catHandle.Result)
+            {
+                SoftCatalog.Add(k);
+            }
         }
-
-        Addressables.Release(catHandle);
+        if (catHandle.Status == AsyncOperationStatus.Failed)
+        {
+            if (OnLoadResult != null) OnLoadResult(false);
+            Addressables.Release(catHandle);
+            yield break;
+        }
+        
 
         catHandle = Addressables.LoadResourceLocationsAsync(new string[] { "Hard", _theme }, Addressables.MergeMode.Intersection);
         yield return catHandle;
@@ -116,6 +126,15 @@ public class MusicPlayer : Singleton<MusicPlayer>
         {
             _softAudioSrc.clip = _softClipHandle.Result;
         }
+        if (_softClipHandle.Status == AsyncOperationStatus.Failed)
+        {
+            if (OnLoadResult != null) {
+                OnLoadResult(false);
+                Addressables.Release(_softClipHandle);
+                yield break;
+            }
+        }
+        
         //Load the hard clip
         rnd = Random.Range(0, HardCatalog.Count);
         _crescClipHandle = Addressables.LoadAssetAsync<AudioClip>(HardCatalog[rnd]);
@@ -130,10 +149,11 @@ public class MusicPlayer : Singleton<MusicPlayer>
         //if (CodaClips.Count > 0)
         //    _codaAudioSrc.clip = CodaClips[rnd];
 
+        if (OnLoadResult != null) OnLoadResult(true);
         _softAudioSrc.PlayScheduled(AudioSettings.dspTime + 0.1);
         startTime = AudioSettings.dspTime + 0.1;
         StartCoroutine(ScheduleStateChange(State.Soft, AudioSettings.dspTime + 0.1));
-        yield return 0;
+        yield return null;
     }
 
     private void CustomExceptionHandler(AsyncOperationHandle arg1, System.Exception exception)
@@ -238,7 +258,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
         _state = State.Toggling;
         yield return new WaitUntil(() => AudioSettings.dspTime > schedTime);
         _state = state;
-        yield return 0;
+        yield return null;
     }
 
     public void Fade()

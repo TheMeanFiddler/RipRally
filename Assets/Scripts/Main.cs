@@ -135,7 +135,7 @@ public class Main : Singleton<Main>, iMain
         if (NewScene.name == "RaceSelector") _musicPlayer.Fade();
 
         int Level = NewScene.buildIndex;
-        if (Level < 5) return;
+        if (Level < 6) return;
         if (OnLevelLoaded != null)
             OnLevelLoaded(Level);
 
@@ -191,7 +191,7 @@ public class Main : Singleton<Main>, iMain
                 }
             }
             PopupTip();
-            StartCoroutine(BPMPlayOfflineCoroutine());//
+            StartCoroutine(BPMPlayOfflineCoroutine());
         }
     }
 

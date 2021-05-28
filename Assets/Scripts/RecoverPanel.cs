@@ -37,7 +37,7 @@ public class RecoverPanel : MonoBehaviour
     public void RecoverYes_Click()
     {
         MusicPlayer.Instance.StepDown();
-        GetComponent<Adverts>().PlayVideoRecover();
+        Adverts.Instance.PlayVideoRecover();
     }
 
     public void RecoverNo_Click()

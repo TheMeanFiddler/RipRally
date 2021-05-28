@@ -5,21 +5,22 @@ using GoogleMobileAds.Api;
 using System;
 using System.Collections;
 
-class Adverts : MonoBehaviour
+class Adverts : Singleton<Adverts>
 {
 
     public int CoinsReward { get; set; }
     private bool? CoinsEarned = null;
     private bool? RecoveryEarned = null;
     string recoverAdUnit_ID;
+    bool? AdReady=null;
     int npaValue = -1;
 
     private RewardedAd rewardedAd;
-    void Init()
+    void GetAdUnitId()
     {
         npaValue = PlayerPrefs.GetInt("npa", 0);    //non personalised ads
         // Initialize the Google Mobile Ads SDK.
-        MobileAds.Initialize(initStatus => { AdInitialize(initStatus); });
+        MobileAds.Initialize(initStatus => {});
         recoverAdUnit_ID = "ca-app-pub-3940256099942544/5224354917";
 #if UNITY_ANDROID
         recoverAdUnit_ID = "ca-app-pub-1062887910651588/8581588982";
@@ -36,50 +37,41 @@ class Adverts : MonoBehaviour
 
     }
 
-    private void AdInitialize(InitializationStatus initStatus)
+public void LoadAd()
     {
+        AdReady = null;
+        GetAdUnitId();
+        rewardedAd = new RewardedAd(recoverAdUnit_ID);
+        this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
+        this.rewardedAd.OnAdFailedToLoad += RewardedAd_OnAdFailedToLoad;
+        this.rewardedAd.OnAdFailedToShow += RewardedAd_OnAdFailedToShow;
+        AdRequest request = new AdRequest.Builder().AddExtra("npa", npaValue.ToString()).Build();
+        // Load the rewarded ad with the request.
+        this.rewardedAd.LoadAd(request);
     }
 
     public void PlayVideo100Coins()
     {
-        Init();
         CoinsReward = 100;
         CoinsEarned = null;
-        this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
-        this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
-        this.rewardedAd.OnAdFailedToLoad += RewardedAd_OnAdFailedToLoad;
-        this.rewardedAd.OnAdFailedToShow += RewardedAd_OnAdFailedToShow;
         this.rewardedAd.OnUserEarnedReward += HandleUserEarnedCoins;
         StartCoroutine(WaitForCoins());
-        // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().AddExtra("npa",npaValue.ToString()).Build();
-        // Load the rewarded ad with the request.
-        this.rewardedAd.LoadAd(request);
     }
 
     public void PlayVideoDoubleCoins(int coinsWon)
     {
-        Init();
         CoinsReward = coinsWon;
         CoinsEarned = null;
+        this.rewardedAd.OnUserEarnedReward += HandleUserEarnedCoins;
+        StartCoroutine(WaitForCoins());
     }
 
     public void PlayVideoRecover()
     {
-        Init();
         CoinsReward = 0;
         RecoveryEarned = null;
-        this.rewardedAd = new RewardedAd(recoverAdUnit_ID);
-        this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
-        this.rewardedAd.OnAdFailedToLoad += RewardedAd_OnAdFailedToLoad;
-        this.rewardedAd.OnAdFailedToShow += RewardedAd_OnAdFailedToShow;
-        this.rewardedAd.OnUserEarnedReward += HandleUserEarnedRecovery;
+        rewardedAd.OnUserEarnedReward += HandleUserEarnedRecovery;
         StartCoroutine(WaitForRecovery());
-        // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().Build();
-        // Load the rewarded ad with the request.
-        this.rewardedAd.LoadAd(request);
-
     }
     
     private void RewardedAd_OnAdFailedToShow(object sender, AdErrorEventArgs e)
@@ -92,11 +84,12 @@ class Adverts : MonoBehaviour
     {
         CoinsEarned = false;
         RecoveryEarned = false;
+        AdReady = false;
     }
 
     private void HandleRewardedAdLoaded(object sender, EventArgs args)
     {
-        this.rewardedAd.Show();
+        AdReady = true;
     }
 
     private void HandleUserEarnedCoins(object sender, Reward args)
@@ -112,12 +105,20 @@ class Adverts : MonoBehaviour
 
     IEnumerator WaitForRecovery()
     {
-        yield return new WaitUntil(()=>RecoveryEarned!= null);
-        if (RecoveryEarned == true)
-            DrivingPlayManager.Current.PlayerCarManager.Recover();
+        yield return new WaitUntil(() => AdReady != null);
+        if (AdReady == true)
+        {
+            rewardedAd.Show();
+            yield return new WaitUntil(() => RecoveryEarned != null);
+            if (RecoveryEarned == true)
+                DrivingPlayManager.Current.PlayerCarManager.Recover();
+            else
+                Main.Instance.PopupMsg("You must watch the whole advert");
+        }
         else
-            Debug.Log("No recovery");
-            ClosePanel();
+            Main.Instance.PopupMsg("Sorry no Advert available");
+
+        LoadAd();       //Load the next ad
         yield return 0;
     }
 
@@ -136,6 +137,8 @@ class Adverts : MonoBehaviour
             UserDataManager.Instance.Data.Coins += CoinsReward;
             UserDataManager.Instance.SaveToFile();
         }
+        CoinsEarned = null;
+        LoadAd();
         yield return 0;
     }
 

@@ -3,29 +3,11 @@
     "m_SelectedPackage": {
         "deviceId": "ZY32365S32",
         "name": "com.SnottyDoggy.RipRally",
-        "processId": 24297,
+        "processId": 30005,
         "exited": false
     },
     "m_SelectedPriority": 0,
     "m_KnownPackagesForSerialization": [
-        {
-            "deviceId": "ZY32365S32",
-            "name": "com.google.android.packageinstaller",
-            "processId": 21129,
-            "exited": true
-        },
-        {
-            "deviceId": "ZY32365S32",
-            "name": "com.SnottyDoggy.RipRally",
-            "processId": 22266,
-            "exited": true
-        },
-        {
-            "deviceId": "ZY32365S32",
-            "name": "com.SnottyDoggy.RipRally",
-            "processId": 24610,
-            "exited": true
-        },
         {
             "deviceId": "ZY32365S32",
             "name": "com.SnottyDoggy.RipRally",
@@ -42,6 +24,24 @@
             "deviceId": "ZY32365S32",
             "name": "com.SnottyDoggy.RipRally",
             "processId": 24297,
+            "exited": true
+        },
+        {
+            "deviceId": "ZY32365S32",
+            "name": "com.SnottyDoggy.RipRally",
+            "processId": 12295,
+            "exited": true
+        },
+        {
+            "deviceId": "ZY32365S32",
+            "name": "com.SnottyDoggy.RipRally",
+            "processId": 6890,
+            "exited": true
+        },
+        {
+            "deviceId": "ZY32365S32",
+            "name": "com.SnottyDoggy.RipRally",
+            "processId": 30005,
             "exited": false
         }
     ],

@@ -33,6 +33,7 @@ public class Splash : MonoBehaviour
         }
         yield return new WaitUntil(() => _musicDone && _gDPRDone);
         SceneManager.LoadScene("TrackSelector");
+        Adverts.Instance.LoadAd();
         yield return null;
     }
 
@@ -45,7 +46,7 @@ public class Splash : MonoBehaviour
         else
             PlayerPrefs.SetInt("npa", 1);
         PlayerPrefs.Save();
-        
+        transform.Find("pnlConsent").gameObject.SetActive(false);
     }
 
     public void ClickPrivacyPolicy()

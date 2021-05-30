@@ -112,7 +112,7 @@ public class UserDataManager
             UserDataSerial usd = (UserDataSerial)bf.Deserialize(file);
             file.Close();
             Data = new UserData(usd);
-            Data.Coins = 989898;    //comment out when live
+            Data.Coins = 20;    //comment out when live
             Debug.Log("Config Loaded");
             if (Data.MacId != SystemInfo.deviceUniqueIdentifier || Data.MacId ==null)
             {

@@ -16,8 +16,10 @@ public class ShopPanel:MonoBehaviour
     GameObject btnBackToShop;
     GameObject btnBackToGame;
     GameObject btnBackToGame2;
+    GameObject btnGetCoins;
     GameObject pnlGetCoins;
     GameObject txtInstructions;
+    GameObject pnlToggles;
     Text txtTotal;
     private ShopItemType _typeFilter;
 
@@ -25,13 +27,14 @@ public class ShopPanel:MonoBehaviour
     {
         trContentPanel = transform.Find("scrlToys/Mask/Content");
         btnPayNow = transform.Find("btnPayNow").gameObject;
+        btnGetCoins = transform.Find("btnGetCoins").gameObject;
         btnShowBasket = transform.Find("btnShowBasket").gameObject;
         btnBackToShop = transform.Find("btnBackToShop").gameObject;
         btnBackToGame = transform.Find("btnBackToGame").gameObject;
         btnBackToGame2 = transform.Find("btnBackToGame2").gameObject;
-        pnlGetCoins = transform.Find("pnlGetCoins").gameObject;
         txtInstructions = transform.Find("txtInstructions").gameObject;
         txtTotal = transform.Find("pnlToys/txtTotal").GetComponent<Text>();
+        pnlToggles = transform.Find("pnlToys/Toggles").gameObject;
         objShopItem = Resources.Load("Prefabs/pnlShopItem");
         Basket = new List<ShopItem>();
         ShowCoins();
@@ -39,9 +42,14 @@ public class ShopPanel:MonoBehaviour
 
     public void SwitchToggle(String TogName)
     {
-        transform.Find("pnlToys/tgl" + TogName).GetComponent<Toggle>().isOn = true;
+        transform.Find("pnlToys/Toggles/tgl" + TogName).GetComponent<Toggle>().isOn = true;
     }
 
+    public void SetTrackFilter(bool IsOn)
+    {
+        if (IsOn)
+        { _typeFilter = ShopItemType.Track; ShowShopItems(); }
+    }
     public void SetRoadFilter(bool IsOn)
     {
         if (IsOn)
@@ -90,14 +98,15 @@ public class ShopPanel:MonoBehaviour
         btnBackToShop.SetActive(false);
         btnBackToGame.SetActive(true);
         btnBackToGame2.SetActive(false);
+        btnGetCoins.SetActive(false);
         btnShowBasket.SetActive(true);
+        pnlToggles.SetActive(true);
         if (BasketTotal() > UserDataManager.Instance.Data.Coins)
         {
-            pnlGetCoins.SetActive(true);
+            txtInstructions.GetComponent<Text>().text = "You need to get more coins";
         }
         else
         {
-            pnlGetCoins.SetActive(false);
             txtInstructions.GetComponent<Text>().text = "";
         }
     }
@@ -111,6 +120,7 @@ public class ShopPanel:MonoBehaviour
     public void ShowBasket()
     {
         ClearScrollView();
+        pnlToggles.SetActive(false);
         foreach (ShopItem itm in Basket)
         {
             GameObject goShopItem = (GameObject)Instantiate(objShopItem, trContentPanel);
@@ -122,7 +132,16 @@ public class ShopPanel:MonoBehaviour
             goShopItem.transform.Find("btnBuy").GetComponent<Button>().onClick.AddListener(delegate { RemoveFromBasket(itm); });
         }
         txtTotal.text = BasketTotal().ToString();
-        btnPayNow.SetActive(true);
+        if (BasketTotal() > UserDataManager.Instance.Data.Coins)
+        {
+            btnGetCoins.SetActive(true);
+            btnPayNow.SetActive(false);
+        }
+        else
+        {
+            btnGetCoins.SetActive(false);
+            btnPayNow.SetActive(true);
+        }
         btnBackToGame.SetActive(false);
         if (Basket.Count == 0)
         {
@@ -130,15 +149,8 @@ public class ShopPanel:MonoBehaviour
         }
         btnBackToShop.SetActive(true);
         btnShowBasket.SetActive(false);
-        if (BasketTotal() > UserDataManager.Instance.Data.Coins)
-        {
-            pnlGetCoins.SetActive(true);
-            btnBackToGame2.SetActive(true);
-            btnPayNow.SetActive(false);
-        }
-        else
-        {
-            pnlGetCoins.SetActive(false);
+        if (BasketTotal() < UserDataManager.Instance.Data.Coins)
+        { 
             txtInstructions.GetComponent<Text>().text = "You have $ " + (UserDataManager.Instance.Data.Coins - BasketTotal()).ToString() + " left to spend";
         }
     }
@@ -171,6 +183,10 @@ public class ShopPanel:MonoBehaviour
         foreach (ShopItem itm in Basket)
         {
             UserDataManager.Instance.Data.Purchases.Add(itm.Id);
+            if (itm.Type == ShopItemType.Track)
+            {
+
+            }
         }
         UserDataManager.Instance.SaveToFile();
         ClearScrollView();
@@ -207,11 +223,11 @@ public class ShopPanel:MonoBehaviour
         yield break;
     }
 
-    public void GetCoins()
+    public void ShowGetCoins()
     {
         UnityEngine.Object objPnl = Resources.Load("Prefabs/pnlGetCoins");
-        GameObject goPnl = (GameObject)GameObject.Instantiate(objPnl, Vector3.zero, Quaternion.identity, this.transform);
-        goPnl.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        pnlGetCoins = (GameObject)GameObject.Instantiate(objPnl, Vector3.zero, Quaternion.identity, this.transform);
+        pnlGetCoins.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
     public void BackToGame()

@@ -50,6 +50,7 @@ public static class Shop
         Items.Add(new ShopItem(ShopItemType.Car, "Banglia", "Car", 500, 0)); //37
         Items.Add(new ShopItem(ShopItemType.Car, "Push", "Car", 700, 0)); //38
         Items.Add(new ShopItem(ShopItemType.Scenery, "House 1", "Buildings", 20, 20));       //39
+        Items.Add(new ShopItem(ShopItemType.Track, "Tenner", "Tracks", 100, 0));       //40
     }
 }
 
@@ -102,5 +103,5 @@ public class ShopItem
 }
 
 
-public enum ShopItemType { Scenery, Fence, Road, Car, Camera }
+public enum ShopItemType { Scenery, Fence, Road, Car, Camera, Track }
 

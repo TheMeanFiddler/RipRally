@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public static class Shop
 {
@@ -50,7 +51,15 @@ public static class Shop
         Items.Add(new ShopItem(ShopItemType.Car, "Banglia", "Car", 500, 0)); //37
         Items.Add(new ShopItem(ShopItemType.Car, "Push", "Car", 700, 0)); //38
         Items.Add(new ShopItem(ShopItemType.Scenery, "House 1", "Buildings", 20, 20));       //39
-        Items.Add(new ShopItem(ShopItemType.Track, "Tenner", "Tracks", 100, 0));       //40
+        Items.Add(new ShopItem(ShopItemType.Track, "Tenner", "Tracks", 500, 0));       //40
+        Items.Add(new ShopItem(ShopItemType.Track, "Flat Rabbit", "Tracks", 500, 0));       //40
+        FillAddressableItems();
+    }
+
+
+    public static async Task FillAddressableItems()
+    {
+        //await AddressableLocationLoader.GetLocations("Tracks", Locations);
     }
 }
 

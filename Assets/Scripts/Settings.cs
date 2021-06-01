@@ -105,6 +105,8 @@ public class UserDataManager
 
     public void LoadFromFile()
     {
+        int DefaultCoins = 100;
+        DefaultCoins = 989898; //comment out when live
         BinaryFormatter bf = new BinaryFormatter();
         if (File.Exists(ConfigDatPath))
         {
@@ -112,11 +114,10 @@ public class UserDataManager
             UserDataSerial usd = (UserDataSerial)bf.Deserialize(file);
             file.Close();
             Data = new UserData(usd);
-            Data.Coins = 20;    //comment out when live
             Debug.Log("Config Loaded");
             if (Data.MacId != SystemInfo.deviceUniqueIdentifier || Data.MacId ==null)
             {
-                Data.Coins = 100;
+                Data.Coins = DefaultCoins;
                 Data.Purchases = new List<int>();
                 Data.Purchases.Add(0);  //Tarmac
                 Data.Purchases.Add(5);  //Fence0
@@ -129,7 +130,7 @@ public class UserDataManager
         }
         else
         {
-            Data.Coins = 100;
+            Data.Coins = DefaultCoins;
             Data.Purchases = new List<int>();
             Data.Purchases.Add(0);
             Data.Purchases.Add(5);

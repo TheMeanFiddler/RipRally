@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System;
+using Assets.Scripts;
 
 public class ShopPanel:MonoBehaviour
 {
@@ -185,7 +186,7 @@ public class ShopPanel:MonoBehaviour
             UserDataManager.Instance.Data.Purchases.Add(itm.Id);
             if (itm.Type == ShopItemType.Track)
             {
-
+                GetComponent<ShopItemDownloader>().Download(itm.Name, "Track");
             }
         }
         UserDataManager.Instance.SaveToFile();

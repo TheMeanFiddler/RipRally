@@ -52,19 +52,29 @@ public static class Shop
         Items.Add(new ShopItem(ShopItemType.Car, "Push", "Car", 700, 0)); //38
         Items.Add(new ShopItem(ShopItemType.Scenery, "House 1", "Buildings", 20, 20));       //39
         Items.Add(new ShopItem(ShopItemType.Track, "Tenner", "Tracks", 500, 0));       //40
-        Items.Add(new ShopItem(ShopItemType.Track, "Flat Rabbit", "Tracks", 500, 0));       //40
+        Items.Add(new ShopItem(ShopItemType.Track, "Flat Rabbit", "Tracks", 500, 0));       //41
         FillAddressableItems();
     }
 
 
     public static async Task FillAddressableItems()
     {
+        List<ShopItemSerial> Itms = await ShopItemReader.ListtShopItems();
+        Debug.Log("Here");
         //await AddressableLocationLoader.GetLocations("Tracks", Locations);
     }
 }
-
-
-public class ShopItem
+[Serializable]
+public class ShopItemSerial
+{
+    public int Id;
+    public string ShopItemType;
+    public string Name;
+    public string Category;
+    public int Licence;
+    public int Cost;
+}
+    public class ShopItem
 {
     public int Id { get; set; }
     public ShopItemType Type { get; set; }

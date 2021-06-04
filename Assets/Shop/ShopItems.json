@@ -1,0 +1,326 @@
+{
+  "Items": [
+    {
+      "Id": 0,
+      "Name": "Tarmac",
+      "ShopItemType": "Road",
+      "Category": "",
+      "Licence": 0,
+      "Cost": 5
+    },
+    {
+      "Id": 1,
+      "Name": "Washboard",
+      "ShopItemType": "Road",
+      "Category": "",
+      "Licence": 100,
+      "Cost": 5   
+    },
+    {
+      "Id": 2,
+      "Name": "DirtyRoad",
+      "ShopItemType": "Road",
+      "Category": "",
+      "Licence": 100,
+      "Cost": 5
+    },
+    {
+      "Id": 3,
+      "Name": "Dirt",
+      "ShopItemType": "Road",
+      "Category": "",
+      "Licence": 100,
+      "Cost": 5
+    },
+    {
+      "Id": 4,
+      "Name": "Air",
+      "ShopItemType": "Road",
+      "Category": "",
+      "Licence": 100,
+      "Cost": 0
+    },
+    {
+      "Id": 5,
+      "Name": "Fence0",
+      "ShopItemType": "Fence",
+      "Category": "",
+      "Licence": 0,
+      "Cost": 0
+      },
+      {
+        "Id": 6,
+        "Name": "Fence1",
+        "ShopItemType": "Fence",
+        "Category": "",
+        "Licence": 0,
+        "Cost": 0
+        },
+        {
+          "Id": 7,
+          "Name": "Fence2",
+          "ShopItemType": "Fence",
+          "Category": "",
+          "Licence": 100,
+          "Cost": 0
+
+        }
+          {
+            "Id": 8,
+            "Name": "Tree",
+            "ShopItemType": "Scenery",
+            "Category": "Nature",
+            "Licence": 0,
+            "Cost": 50
+          },
+            {
+              "Id": 40,
+              "Name": "Rock1",
+              "ShopItemType": "Scenery",
+              "Category": "Nature",
+              "Licence": 100,
+              "Cost": 20} //9",
+              {
+                "Id": 40,
+                "Name": "WoodStrut",
+                "ShopItemType": "Scenery",
+                "Category": "Buildings",
+                "Licence": 200,
+                "Cost": 50} //10",
+                {
+                  "Id": 40,
+                  "Name": "CurvedRamp",
+                  "ShopItemType": "Scenery",
+                  "Category": "Gadgets",
+                  "Licence": 400,
+                  "Cost": 100} //11",
+                  {
+                    "Id": 40,
+                    "Name": "Spectators",
+                    "ShopItemType": "Scenery",
+                    "Category": "People",
+                    "Licence": 2000,
+                    "Cost": 200,
+                    " " "} //12",
+                    {
+                      "Id": 40,
+                      "Name": "RomanArch",
+                      "ShopItemType": "Scenery",
+                      "Category": "Buildings",
+                      "Licence": 300,
+                      "Cost": 100} //13",
+                      {
+                        "Id": 40,
+                        "Name": "SeeSaw",
+                        "ShopItemType": "Scenery",
+                        "Category": "Gadgets",
+                        "Licence": 1000,
+                        "Cost": 500
+
+                      } //14",
+                        {
+                          "Id": 40,
+                          "Name": "Platform",
+                          "ShopItemType": "Scenery",
+                          "Category": "Gadgets",
+                          "Licence": 200,
+                          "Cost": 50
+
+                        } //15",
+                    {
+                      "Id": 40,
+                      "Name": "Follow Cam",
+                      "ShopItemType": "Camera",
+                      "Category": "Cameras",
+                      "Licence": 0,
+                      "Cost": 0
+                    }
+                          } //16",
+                            {
+                              "Id": 40,
+                              "Name": "Wheelarch Cam",
+                              "ShopItemType": "Camera",
+                              "Category": "Cameras",
+                              "Licence": 400,
+                              "Cost": 0} //17",
+                              {
+                                "Id": 40,
+                                "Name": "Driver Cam",
+                                "ShopItemType": "Camera",
+                                "Category": "Cameras",
+                                "Licence": 600,
+                                "Cost": 0} //18",
+                                {
+                                  "Id": 40,
+                                  "Name": "Zoom Cam",
+                                  "ShopItemType": "Camera",
+                                  "Category": "Cameras",
+                                  "Licence": 800,
+                                  "Cost": 0} //19",
+                                  {
+                                    "Id": 40,
+                                    "Name": "Drone Cam",
+                                    "ShopItemType": "Camera",
+                                    "Category": "Cameras",
+                                    "Licence": 800,
+                                    "Cost": 0} //20",
+                                    {
+                                      "Id": 40,
+                                      "Name": "RoadRunner Cam",
+                                      "ShopItemType": "Camera",
+                                      "Category": "Cameras",
+                                      "Licence": 1000,
+                                      "Cost": 0} //21",
+                                      {
+                                        "Id": 40,
+                                        "Name": "Hedgehog Cam",
+                                        "ShopItemType": "Camera",
+                                        "Category": "Cameras",
+                                        "Licence": 1000,
+                                        "Cost": 0} //22",
+                                        {
+                                          "Id": 40,
+                                          "Name": "Side Cam",
+                                          "ShopItemType": "Camera",
+                                          "Category": "Cameras",
+                                          "Licence": 200,
+                                          "Cost": 0} //23",
+                                          {
+                                            "Id": 40,
+                                            "Name": "Loop",
+                                            "ShopItemType": "Scenery",
+                                            "Category": "Gadgets",
+                                            "Licence": 1400,
+                                            "Cost": 700} //24",
+                                            {
+                                              "Id": 40,
+                                              "Name": "StoneWall",
+                                              "ShopItemType": "Fence",
+                                              "Category": "",
+                                              "Licence": 200,
+                                              "Cost": 0} //25",
+                                              {
+                                                "Id": 40,
+                                                "Name": "PineTree",
+                                                "ShopItemType": "Scenery",
+                                                "Category": "Nature",
+                                                "Licence": 100,
+                                                "Cost": 50} //26",
+                                                {
+                                                  "Id": 40,
+                                                  "Name": "SuspensionBridge",
+                                                  "ShopItemType": "Scenery",
+                                                  "Category": "Buildings",
+                                                  "Licence": 300,
+                                                  "Cost": 200} //27",
+                                                  {
+                                                    "Id": 40,
+                                                    "Name": "Sign Left Bend",
+                                                    "ShopItemType": "Scenery",
+                                                    "Category": "Buildings",
+                                                    "Licence": 0,
+                                                    "Cost": 2} //28",
+                                                    {
+                                                      "Id": 40,
+                                                      "Name": "Sign Left Hairpin",
+                                                      "ShopItemType": "Scenery",
+                                                      "Category": "Buildings",
+                                                      "Licence": 0,
+                                                      "Cost": 2} //29",
+                                                      {
+                                                        "Id": 40,
+                                                        "Name": "Sign Right Bend",
+                                                        "ShopItemType": "Scenery",
+                                                        "Category": "Buildings",
+                                                        "Licence": 0,
+                                                        "Cost": 2} //30",
+                                                        {
+                                                          "Id": 40,
+                                                          "Name": "Sign Right Hairpin",
+                                                          "ShopItemType": "Scenery",
+                                                          "Category": "Buildings",
+                                                          "Licence": 0,
+                                                          "Cost": 2} //31",
+                                                          {
+                                                            "Id": 40,
+                                                            "Name": "Plank",
+                                                            "ShopItemType": "Scenery",
+                                                            "Category": "Buildings",
+                                                            "Licence": 20,
+                                                            "Cost": 20} //32",
+                                                            {
+                                                              "Id": 40,
+                                                              "Name": "Rock2",
+                                                              "ShopItemType": "Scenery",
+                                                              "Category": "Nature",
+                                                              "Licence": 100,
+                                                              "Cost": 20} //33",
+                                                              {
+                                                                "Id": 40,
+                                                                "Name": "Ice Cam",
+                                                                "ShopItemType": "Camera",
+                                                                "Category": "Cameras",
+                                                                "Licence": 1000,
+                                                                "Cost": 0} //34",
+                                                                {
+                                                                  "Id": 40,
+                                                                  "Name": "Slocus",
+                                                                  "ShopItemType": "Car",
+                                                                  "Category": "Car",
+                                                                  "Licence": 600,
+                                                                  "Cost": 0} //35",
+                                                                  {
+                                                                    "Id": 40,
+                                                                    "Name": "HotRod",
+                                                                    "ShopItemType": "Car",
+                                                                    "Category": "Car",
+                                                                    "Licence": 0,
+                                                                    "Cost": 0} //36",
+                                                                    {
+                                                                      "Id": 40,
+                                                                      "Name": "Banglia",
+                                                                      "ShopItemType": "Car",
+                                                                      "Category": "Car",
+                                                                      "Licence": 500,
+                                                                      "Cost": 0} //37",
+                                                                      {
+                                                                        "Id": 38,
+                                                                        "Name": "Push",
+                                                                        "ShopItemType": "Car",
+                                                                        "Category": "Car",
+                                                                        "Licence": 700,
+                                                                        "Cost": 0} //38",
+                                                                        {
+                                                                          "Id": 39,
+                                                                          "Name": "House 1",
+                                                                          "ShopItemType": "Scenery",
+                                                                          "Category": "Buildings",
+                                                                          "Licence": 20,
+                                                                          "Cost": 20));\" //39"
+                                                                        },
+                                                                        {
+                                                                          "Id": 40,
+                                                                          "Name": "Tenner",
+                                                                          "ShopItemType": "Track",
+                                                                          "Category": "Tracks",
+                                                                          "Licence": 500,
+                                                                          "Cost": 0
+                                                                        },
+                                                                        {
+                                                                          "Id": 41,
+                                                                          "Name": "Flat Rabbit",
+                                                                          "ShopItemType": "Track",
+                                                                          "Category": "Tracks",
+                                                                          "Licence": 500,
+                                                                          "Cost": 0
+                                                                        },
+                                                                        {
+                                                                          "Id": 42,
+                                                                          "Name": "Lakeside",
+                                                                          "ShopItemType": "Track",
+                                                                          "Category": "Tracks",
+                                                                          "Licence": 500,
+                                                                          "Cost": 0
+                                                                        }
+  ]
+}

@@ -60,7 +60,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     internal void ApplySettings(bool isOn)
     {
-        audioSrcs[0].mute = !isOn; audioSrcs[1].mute = !isOn; _codaAudioSrc.mute = !isOn;
+        _softAudioSrc.mute = !isOn; _crescAudioSrc.mute = !isOn; _codaAudioSrc.mute = !isOn;
     }
 
     public void LoadTheme()

@@ -59,7 +59,7 @@ public static class Shop
 
     public static async Task FillAddressableItems()
     {
-        List<ShopItemSerial> Itms = await ShopItemReader.ListtShopItems();
+        List<ShopItemSerial> Itms = await ShopItemReader.ListShopItems();
         Debug.Log("Here");
         //await AddressableLocationLoader.GetLocations("Tracks", Locations);
     }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 public static class ShopItemReader
-{
+{   //ShopItems are id, name, type, category, cost, licence, image
     static string _url = "https://riprallybucket.s3.eu-west-2.amazonaws.com/shop/ShopItems.json";
-    public static async Task<List<ShopItemSerial>> ListtShopItems()
+    public static async Task<List<ShopItemSerial>> ListShopItems()
     {
         using (var client = new HttpClient())
         {

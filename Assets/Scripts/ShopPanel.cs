@@ -183,11 +183,11 @@ public class ShopPanel:MonoBehaviour
         UserDataManager.Instance.Data.Coins -= BasketTotal();
         foreach (ShopItem itm in Basket)
         {
-            UserDataManager.Instance.Data.Purchases.Add(itm.Id);
             if (itm.Type == ShopItemType.Track)
             {
-                GetComponent<ShopItemDownloader>().Download(itm.Name, "Track");
+                GetComponent<PurchaseDownloader>().StartDownload(itm.Name, "Track");
             }
+            UserDataManager.Instance.Data.Purchases.Add(itm.Id);
         }
         UserDataManager.Instance.SaveToFile();
         ClearScrollView();
@@ -196,6 +196,8 @@ public class ShopPanel:MonoBehaviour
         Basket.Clear();
         Destroy(this.gameObject);
     }
+
+
 
     private void ShowCoins()
     {

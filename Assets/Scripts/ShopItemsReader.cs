@@ -38,6 +38,7 @@ public class ShopItemsReader:IDisposable
                 AsyncOperationHandle<Sprite> _iconHandle = Addressables.LoadAssetAsync<Sprite>("Assets/Shop/Icons/CarType"+i.Name+".png");
                 await _iconHandle.Task;
                 _icon = _iconHandle.Result;
+                Addressables.Release(_iconHandle);
             }
             else
             {

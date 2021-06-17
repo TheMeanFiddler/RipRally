@@ -27,7 +27,7 @@ public class PurchaseDownloader:MonoBehaviour
         IList<IResourceLocation> Locations = new List<IResourceLocation>();
         //each shop item is a listing
         StringBuilder sb = new StringBuilder("Assets/Shop/").Append(assetName);
-        if ("Track" == label) sb.Append(".bytes"); else sb.Append(".prefab");
+        if ("Track" == label) sb.Append(".bytes");
         string strPath = sb.ToString();
         await AddressableLocationLoader.GetLocations(label, Locations);
         IResourceLocation loc = Locations.SingleOrDefault(l => l.PrimaryKey.Equals(assetName));

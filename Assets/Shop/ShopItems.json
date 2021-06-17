@@ -1,12 +1,13 @@
 {
-	"Items": [
+  "Items": [
     {
       "Id": 0,
       "Name": "Tarmac",
       "ShopItemType": "Road",
       "Category": "",
       "Licence": 0,
-      "Cost": 5
+      "Cost": 5,
+      "Addressable": false
     },
     {
       "Id": 1,
@@ -14,7 +15,8 @@
       "ShopItemType": "Road",
       "Category": "",
       "Licence": 100,
-      "Cost": 5
+      "Cost": 5,
+      "Addressable": false
     },
     {
       "Id": 2,
@@ -22,7 +24,8 @@
       "ShopItemType": "Road",
       "Category": "",
       "Licence": 100,
-      "Cost": 5
+      "Cost": 5,
+      "Addressable": false
     },
     {
       "Id": 3,
@@ -30,7 +33,8 @@
       "ShopItemType": "Road",
       "Category": "",
       "Licence": 100,
-      "Cost": 5
+      "Cost": 5,
+      "Addressable": false
     },
     {
       "Id": 4,
@@ -38,7 +42,8 @@
       "ShopItemType": "Road",
       "Category": "",
       "Licence": 100,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 5,
@@ -46,7 +51,8 @@
       "ShopItemType": "Fence",
       "Category": "",
       "Licence": 0,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 6,
@@ -54,7 +60,8 @@
       "ShopItemType": "Fence",
       "Category": "",
       "Licence": 0,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 7,
@@ -62,7 +69,8 @@
       "ShopItemType": "Fence",
       "Category": "",
       "Licence": 100,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 8,
@@ -70,7 +78,8 @@
       "ShopItemType": "Scenery",
       "Category": "Nature",
       "Licence": 0,
-      "Cost": 50
+      "Cost": 50,
+      "Addressable": false
     },
     {
       "Id": 9,
@@ -78,7 +87,8 @@
       "ShopItemType": "Scenery",
       "Category": "Nature",
       "Licence": 100,
-      "Cost": 20
+      "Cost": 20,
+      "Addressable": false
     },
     {
       "Id": 10,
@@ -86,7 +96,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 200,
-      "Cost": 50
+      "Cost": 50,
+      "Addressable": false
     },
     {
       "Id": 11,
@@ -94,7 +105,8 @@
       "ShopItemType": "Scenery",
       "Category": "Gadgets",
       "Licence": 400,
-      "Cost": 100
+      "Cost": 100,
+      "Addressable": false
     },
     {
       "Id": 12,
@@ -102,7 +114,8 @@
       "ShopItemType": "Scenery",
       "Category": "People",
       "Licence": 2000,
-      "Cost": 200
+      "Cost": 200,
+      "Addressable": false
     },
     {
       "Id": 13,
@@ -110,7 +123,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 300,
-      "Cost": 100
+      "Cost": 100,
+      "Addressable": false
     },
     {
       "Id": 14,
@@ -118,8 +132,8 @@
       "ShopItemType": "Scenery",
       "Category": "Gadgets",
       "Licence": 1000,
-      "Cost": 500
-      
+      "Cost": 500,
+      "Addressable": false
     },
     {
       "Id": 15,
@@ -127,8 +141,8 @@
       "ShopItemType": "Scenery",
       "Category": "Gadgets",
       "Licence": 200,
-      "Cost": 50
-      
+      "Cost": 50,
+      "Addressable": false
     },
     {
       "Id": 16,
@@ -136,7 +150,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 0,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 17,
@@ -144,7 +159,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 400,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 18,
@@ -152,7 +168,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 600,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 19,
@@ -160,7 +177,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 800,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 20,
@@ -168,7 +186,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 800,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 21,
@@ -176,7 +195,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 1000,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 22,
@@ -184,7 +204,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 1000,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 23,
@@ -192,7 +213,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 200,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 24,
@@ -200,7 +222,8 @@
       "ShopItemType": "Scenery",
       "Category": "Gadgets",
       "Licence": 1400,
-      "Cost": 700
+      "Cost": 700,
+      "Addressable": false
     },
     {
       "Id": 25,
@@ -208,7 +231,8 @@
       "ShopItemType": "Fence",
       "Category": "",
       "Licence": 200,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 26,
@@ -216,7 +240,8 @@
       "ShopItemType": "Scenery",
       "Category": "Nature",
       "Licence": 100,
-      "Cost": 50
+      "Cost": 50,
+      "Addressable": false
     },
     {
       "Id": 27,
@@ -224,7 +249,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 300,
-      "Cost": 200
+      "Cost": 200,
+      "Addressable": false
     },
     {
       "Id": 28,
@@ -232,7 +258,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 0,
-      "Cost": 2
+      "Cost": 2,
+      "Addressable": false
     },
     {
       "Id": 29,
@@ -240,7 +267,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 0,
-      "Cost": 2
+      "Cost": 2,
+      "Addressable": false
     },
     {
       "Id": 30,
@@ -248,7 +276,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 0,
-      "Cost": 2
+      "Cost": 2,
+      "Addressable": false
     },
     {
       "Id": 31,
@@ -256,7 +285,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 0,
-      "Cost": 2
+      "Cost": 2,
+      "Addressable": false
     },
     {
       "Id": 32,
@@ -264,7 +294,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 20,
-      "Cost": 20
+      "Cost": 20,
+      "Addressable": false
     },
     {
       "Id": 33,
@@ -272,7 +303,8 @@
       "ShopItemType": "Scenery",
       "Category": "Nature",
       "Licence": 100,
-      "Cost": 20
+      "Cost": 20,
+      "Addressable": false
     },
     {
       "Id": 34,
@@ -280,7 +312,8 @@
       "ShopItemType": "Camera",
       "Category": "Cameras",
       "Licence": 1000,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 35,
@@ -288,7 +321,8 @@
       "ShopItemType": "Car",
       "Category": "Car",
       "Licence": 600,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 36,
@@ -296,7 +330,8 @@
       "ShopItemType": "Car",
       "Category": "Car",
       "Licence": 0,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 37,
@@ -304,7 +339,8 @@
       "ShopItemType": "Car",
       "Category": "Car",
       "Licence": 500,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 38,
@@ -312,7 +348,8 @@
       "ShopItemType": "Car",
       "Category": "Car",
       "Licence": 700,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": false
     },
     {
       "Id": 39,
@@ -320,7 +357,8 @@
       "ShopItemType": "Scenery",
       "Category": "Buildings",
       "Licence": 20,
-      "Cost": 20
+      "Cost": 20,
+      "Addressable": false
     },
     {
       "Id": 40,
@@ -328,7 +366,8 @@
       "ShopItemType": "Track",
       "Category": "Tracks",
       "Licence": 500,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": true
     },
     {
       "Id": 41,
@@ -336,15 +375,35 @@
       "ShopItemType": "Track",
       "Category": "Tracks",
       "Licence": 500,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": true
     },
     {
       "Id": 42,
-      "Name": "Lakeside",
+      "Name": "Ryan",
       "ShopItemType": "Track",
       "Category": "Tracks",
       "Licence": 500,
-      "Cost": 0
+      "Cost": 0,
+      "Addressable": true
+    },
+    {
+      "Id": 43,
+      "Name": "Lucky Seven",
+      "ShopItemType": "Track",
+      "Category": "Tracks",
+      "Licence": 500,
+      "Cost": 0,
+      "Addressable": true
+    },
+    {
+      "Id": 44,
+      "Name": "Numero Uno",
+      "ShopItemType": "Track",
+      "Category": "Tracks",
+      "Licence": 500,
+      "Cost": 0,
+      "Addressable": true
     }
   ]
 }

@@ -54,6 +54,7 @@ public sealed class Scenery
 public abstract class PlaceableObject : System.IDisposable
 {
     public string prefab { get; set; }
+    public bool Addressable { get; set; }
     public string name { get; set; }
     public GameObject gameObject;
     private Camera FPCam;

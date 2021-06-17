@@ -28,7 +28,7 @@ using System.Text;
             var ChargeableRdCost =
                 from rs in ChargeableRdCount
                 join ShItm in RdShopItms on rs.Mat equals ShItm.Mat
-                select new ShopItem(ShopItemType.Road, ShItm.Mat, "", 0, rs.SectnCount * ShItm.Cost);
+                select new ShopItem(ShopItemType.Road, ShItm.Mat, "", 0, rs.SectnCount * ShItm.Cost, false);
 
             return ChargeableRdCost.ToArray();
         }

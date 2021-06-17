@@ -39,6 +39,8 @@ public class PlaceableObjectSerial
     public Vector3Serial pos;
     public Vector3Serial Scale;
     public QuaternionSerial rot;
+    [System.Runtime.Serialization.OptionalField]
+    public bool Addressable;
 
     public void Encode(PlaceableObject Obj)
     {
@@ -48,6 +50,7 @@ public class PlaceableObjectSerial
         pos = new Vector3Serial(Obj.Pos);
         Scale = new Vector3Serial(Obj.Scale);
         rot = new QuaternionSerial(Obj.Rot);
+        Addressable = Obj.Addressable;
     }
 
     public PlaceableObject Decode()
@@ -67,6 +70,7 @@ public class PlaceableObjectSerial
         rtn.Pos = pos.V3;
         try { rtn.Scale = Scale.V3; } catch { rtn.Scale = Vector3.one; }
         rtn.Rot = rot.Decode;
+        rtn.Addressable = Addressable;
         return rtn;
     }
 }

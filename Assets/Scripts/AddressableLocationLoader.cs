@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
+using System.Linq;
 
     public static class AddressableLocationLoader
     {
@@ -13,5 +15,11 @@ using UnityEngine.ResourceManagement.ResourceLocations;
                 loadedLocations.Add(item);
             }
         }
+    public static async Task<IResourceLocation> GetLocation(string label)
+    {
+        AsyncOperationHandle<IList<IResourceLocation>> h1 = Addressables.LoadResourceLocationsAsync(label);
+        await h1.Task;
+        return h1.Result.FirstOrDefault();
     }
+}
 

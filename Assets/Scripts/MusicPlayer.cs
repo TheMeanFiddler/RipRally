@@ -158,7 +158,7 @@ public class MusicPlayer : Singleton<MusicPlayer>
 
     private void CustomExceptionHandler(AsyncOperationHandle arg1, System.Exception exception)
     {
-        Debug.Log(exception.GetType());
+        Debug.Log(exception.GetType() + exception.Message);
     }
 
     private void Update()

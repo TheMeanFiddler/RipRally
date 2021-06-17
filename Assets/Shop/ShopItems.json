@@ -322,7 +322,7 @@
       "Category": "Car",
       "Licence": 600,
       "Cost": 0,
-      "Addressable": false
+      "Addressable": true
     },
     {
       "Id": 36,
@@ -340,7 +340,7 @@
       "Category": "Car",
       "Licence": 500,
       "Cost": 0,
-      "Addressable": false
+      "Addressable": true
     },
     {
       "Id": 38,

@@ -8,10 +8,12 @@ using UnityEngine;
 using System.Runtime.Serialization;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.U2D;  //for Sprite altas
 
-public class ShopItemReader:IDisposable
+public class ShopItemsReader:IDisposable
 {  
-    private IResourceLocation _spriteLoc;
+    private IList<IResourceLocation> _spriteLocs = new List<IResourceLocation>();
+    public AssetReferenceSprite SpriteRef;
     private bool disposedValue;
 
     //ShopItems are id, name, type, category, cost, licence, image, Addressable
@@ -19,25 +21,24 @@ public class ShopItemReader:IDisposable
     {
         Sprite _icon = null;
         //get the location of the ShopIcons AssetBundle;
-        IList<IResourceLocation> IconLocations = new List<IResourceLocation>();
-        Task GetLocsTask = AddressableLocationLoader.GetLocations("ShopIcon", IconLocations);
+        Task GetLocsTask = AddressableLocationLoader.GetLocations("ShopIcon", _spriteLocs);
         await GetLocsTask;
-        _spriteLoc = IconLocations.FirstOrDefault();// foreach(IResourceLocation l in IconLocations)
-        AsyncOperationHandle<IList<Sprite>> hs = Addressables.LoadAssetsAsync<Sprite>(_spriteLoc, obj => { Debug.Log("Loaded" + obj.name); });
         //Get the ShopItems json file
-        Task<TextAsset> MyTask =  Addressables.LoadAssetAsync<TextAsset>("ShopItems").Task;
-        await MyTask;
-        string jsn = MyTask.Result.text;
+        AsyncOperationHandle<TextAsset> MyH =  Addressables.LoadAssetAsync<TextAsset>("ShopItems");
+        await MyH.Task;
+        string jsn = MyH.Result.text;
         List<ShopItemSerial> _shopItems = JsonHelper.FromJson<ShopItemSerial>(jsn).ToList();
         List<ShopItem> List = new List<ShopItem>();
         //await hs.Task;
         foreach (var i in _shopItems)
         {
             ShopItemType _type = (ShopItemType)Enum.Parse(typeof(ShopItemType), i.ShopItemType);
-            if (i.Name == "CarTypeBanglia")
-
-                _icon = hs.Result.FirstOrDefault(s => s.name == i.Name);
-            //}
+            if (i.Addressable && i.ShopItemType!="Track")
+            {
+                AsyncOperationHandle<Sprite> _iconHandle = Addressables.LoadAssetAsync<Sprite>("Assets/Shop/Icons/CarType"+i.Name+".png");
+                await _iconHandle.Task;
+                _icon = _iconHandle.Result;
+            }
             else
             {
                 if (_type == ShopItemType.Scenery || _type == ShopItemType.Road || _type == ShopItemType.Fence)
@@ -63,8 +64,9 @@ public class ShopItemReader:IDisposable
                 }
             }
             */
-            List.Add(new ShopItem(_type, i.Name, i.Category, i.Licence, i.Cost, i.Addressable, _icon));
+            List.Add(new ShopItem(i.Id, _type, i.Name, i.Category, i.Licence, i.Cost, i.Addressable, _icon));
         }
+        Addressables.Release(MyH);
         return List;
     }
 

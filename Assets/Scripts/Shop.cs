@@ -60,7 +60,7 @@ public static class Shop
 
     private static async Task GetShopItemsAsync()
     {
-        using (ShopItemReader r = new ShopItemReader())
+        using (ShopItemsReader r = new ShopItemsReader())
         {
             Task<List<ShopItem>> T = r.ListShopItemsAsync();
             await T;
@@ -85,9 +85,9 @@ public class ShopItem
     public bool Addressable { get; set; }
 
     //constructor
-    public ShopItem(ShopItemType type, String name, string category, int licence, int cost, bool addressable, Sprite image = null)
+    public ShopItem(int id, ShopItemType type, String name, string category, int licence, int cost, bool addressable, Sprite image = null)
     {
-        Id = Shop.Items.Count;
+        Id = id;
         Type = type;
         Name = name;
         Category = category;
